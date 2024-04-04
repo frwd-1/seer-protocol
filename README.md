@@ -16,7 +16,7 @@ A project for the decentralized identification of all on-chain nodes and relatio
 
 - EVM based blockchains are characterized by arbitrarily complex contracts
 
-- Without user interfaces, arbitrary smart contracts are largely invisible:
+- Without user interfaces, arbitrary smart contracts are largely invisible to ordinary users:
 
 ```
 if (x == true) {
