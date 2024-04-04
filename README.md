@@ -4,4 +4,4 @@ A project for the decentralized identification of all on-chain nodes and relatio
 
 # Tenets
 
-The contract is the basic building block of the market economy [^1]
+The [contract](https://nakamotoinstitute.org/library/formalizing-securing-relationships) is the basic building block of the market economy
