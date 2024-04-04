@@ -4,13 +4,13 @@ A project for the decentralized identification of all on-chain nodes and relatio
 
 # Tenets
 
-    + The way to formalize economic relationships is the [contract](https://nakamotoinstitute.org/library/formalizing-securing-relationships), and contracts are the basic building block of the market economy
+    The way to formalize economic relationships is the [contract](https://nakamotoinstitute.org/library/formalizing-securing-relationships), and contracts are the basic building block of the market economy
 
-    + There are three properties of good contract design: observability, verifiability and privity
+    There are three properties of good contract design: observability, verifiability and privity
 
-    + Code based "smart contracts" can enhance all three
+    Code based "smart contracts" can enhance all three
 
-    + Without user interfaces, smart contracts are largely invisible:
+    Without user interfaces, smart contracts are largely invisible:
 
 ```
 if (x == true) {
