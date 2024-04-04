@@ -8,7 +8,13 @@ A project for the decentralized identification of all on-chain nodes and relatio
 
 - There are three properties of good contract design: observability, verifiability and privity
 
-- Code based "smart contracts" can enhance all three
+- Code based "smart contracts" enhance all three
+
+- Trusted third parties are security holes
+
+- Bitcoin derives its value from its secure enforcement of a simple contract - value transfer
+
+- EVM based blockchains are characterized by arbitrarily complex contracts
 
 - Without user interfaces, smart contracts are largely invisible:
 
