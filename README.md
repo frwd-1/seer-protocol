@@ -10,13 +10,13 @@ A project for the decentralized identification of all on-chain nodes and relatio
 
 - Code based "smart contracts" enhance all three
 
-- Trusted third parties are security holes
+- Relying on a trusted third party to enforce a contract is a security hole
 
 - Bitcoin derives its value from its secure enforcement of a simple contract - value transfer
 
 - EVM based blockchains are characterized by arbitrarily complex contracts
 
-- Without user interfaces, arbitrary smart contracts are largely invisible to ordinary users:
+- Without user interfaces, the actual terms of smart contracts are largely invisible to ordinary users:
 
 ```
 if (x == true) {
