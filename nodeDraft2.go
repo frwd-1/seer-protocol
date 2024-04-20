@@ -4,11 +4,24 @@ import (
 	"context"
 	"log"
 
+	"bytes"
+	"encoding/json"
+	"net/http"
+
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	libp2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p/core/host"
 )
+
+type TransactionData struct {
+	Nonce    uint64 `json:"nonce"`
+	GasPrice string `json:"gasPrice"`
+	GasLimit uint64 `json:"gasLimit"`
+	To       string `json:"to,omitempty"`
+	Value    string `json:"value"`
+	Data     string `json:"data"`
+}
 
 type NodeConfig struct {
 	EthereumNodeURL string
@@ -28,7 +41,7 @@ func NewSeerNode(config NodeConfig) *SeerNode {
 	}
 
 	p2pHost, err := libp2p.New(
-		libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"), // Specify network listening options
+		libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"), // todo: specify network listening options
 	)
 	if err != nil {
 		log.Fatalf("Failed to create P2P host: %v", err)
@@ -69,7 +82,32 @@ func (node *SeerNode) processBlock(header *types.Header) {
 }
 
 func (node *SeerNode) processTransaction(tx *types.Transaction) {
-	log.Printf("Processing transaction: %s", tx.Hash().Hex())
+	txData := TransactionData{
+		Nonce:    tx.Nonce(),
+		GasPrice: tx.GasPrice().String(),
+		GasLimit: tx.Gas(),
+		To: func() string {
+			if tx.To() == nil {
+				return ""
+			} else {
+				return tx.To().Hex()
+			}
+		}(),
+		Value: tx.Value().String(),
+		Data:  string(tx.Data()),
+	}
+
+	jsonData, err := json.Marshal(txData)
+	if err != nil {
+		log.Printf("Failed to serialize transaction data: %v", err)
+		return
+	}
+
+	// HTTP POST to local Python service
+	_, err = http.Post("http://localhost:5000/transaction", "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		log.Printf("Failed to send transaction data: %v", err)
+	}
 }
 
 func main() {
