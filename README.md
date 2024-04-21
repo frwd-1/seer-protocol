@@ -4,6 +4,8 @@ A project for the decentralized identification of all on-chain nodes and relatio
 
 # Tenets
 
+- Action is identity onchain
+
 - The way to formalize economic relationships is the [contract](https://nakamotoinstitute.org/library/formalizing-securing-relationships), and contracts are the basic building block of the market economy
 
 - There are three properties of good contract design: observability, verifiability and privity
@@ -23,5 +25,3 @@ if (x == true) {
     printf("x is false");
 }
 ```
-
-- Action is identity onchain

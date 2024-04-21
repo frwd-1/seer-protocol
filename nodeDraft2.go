@@ -3,10 +3,13 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 
 	"bytes"
 	"encoding/json"
 	"net/http"
+
+	"github.com/joho/godotenv"
 
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -111,9 +114,17 @@ func (node *SeerNode) processTransaction(tx *types.Transaction) {
 }
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	ethereumNodeURL := os.Getenv("ETHEREUM_NODE_URL")
+	seerNodeAddress := os.Getenv("SEER_NODE_ADDRESS")
+
 	config := NodeConfig{
-		EthereumNodeURL: "ws://localhost:8546",
-		SeerNodeAddress: "example-seer-node-address",
+		EthereumNodeURL: ethereumNodeURL,
+		SeerNodeAddress: seerNodeAddress,
 	}
 	seerNode := NewSeerNode(config)
 	go seerNode.MonitorBlockchain()
