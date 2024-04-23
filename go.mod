@@ -4,6 +4,7 @@ go 1.21.5
 
 require (
 	github.com/ethereum/go-ethereum v1.13.15
+	github.com/joho/godotenv v1.5.1
 	github.com/libp2p/go-libp2p v0.33.2
 )
 
@@ -41,7 +42,6 @@ require (
 	github.com/ipfs/go-log/v2 v2.5.1 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
 	github.com/jbenet/go-temp-err-catcher v0.1.0 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/klauspost/compress v1.17.6 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/koron/go-ssdp v0.0.4 // indirect
