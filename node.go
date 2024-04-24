@@ -107,6 +107,7 @@ func (node *SeerNode) processTransaction(tx *types.Transaction) {
 	}
 
 	// HTTP POST to local Python service
+	// todo: replace with libp2p message
 	_, err = http.Post("http://localhost:5000/transaction", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		log.Printf("Failed to send transaction data: %v", err)
