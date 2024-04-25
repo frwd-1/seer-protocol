@@ -1,11 +1,13 @@
-package main
+package peer
 
 import (
-	"github.com/frwd-1/SeerProtocol/node"
+	libp2p "github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p/core/host"
 )
 
-func main() {
-	node := node.NewSeerNode(node.NodeConfig{
-		EthereumNodeURL: "http://localhost:8545",
-		SeerNodeAddress: "/ip4/
-	})
+func NewHost() (host.Host, error) {
+	return libp2p.New(
+		libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"), // You can specify your network listening options here
+		// ... add other options as needed
+	)
+}

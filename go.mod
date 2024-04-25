@@ -1,4 +1,4 @@
-module SeerProtocol
+module github.com/frwd-1/SeerProtocol
 
 go 1.21.5
 
