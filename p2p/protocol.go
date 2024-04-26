@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
+	"github.com/frwd-1/SeerProtocol/p2p/snode"
+	"github.com/frwd-1/SeerProtocol/p2p/snr"
 )
 
 // Protocol represents a P2P subprotocol implementation.
@@ -53,15 +53,15 @@ type Protocol struct {
 	// PeerInfo is an optional helper method to retrieve protocol specific metadata
 	// about a certain peer in the network. If an info retrieval function is set,
 	// but returns nil, it is assumed that the protocol handshake is still running.
-	PeerInfo func(id enode.ID) interface{}
+	PeerInfo func(id snode.ID) interface{}
 
 	// DialCandidates, if non-nil, is a way to tell Server about protocol-specific nodes
 	// that should be dialed. The server continuously reads nodes from the iterator and
 	// attempts to create connections to them.
-	DialCandidates enode.Iterator
+	DialCandidates snode.Iterator
 
 	// Attributes contains protocol specific information for the node record.
-	Attributes []enr.Entry
+	Attributes []snr.Entry
 }
 
 func (p Protocol) cap() Cap {

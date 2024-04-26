@@ -31,14 +31,15 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/crypto"
+
 	"github.com/ethereum/go-ethereum/event"
 	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/discover"
-	"github.com/ethereum/go-ethereum/p2p/nat"
-	"github.com/ethereum/go-ethereum/p2p/netutil"
 
+	"github.com/frwd-1/SeerProtocol/crypto"
+	"github.com/frwd-1/SeerProtocol/p2p"
+	"github.com/frwd-1/SeerProtocol/p2p/discover"
+	"github.com/frwd-1/SeerProtocol/p2p/nat"
+	"github.com/frwd-1/SeerProtocol/p2p/netutil"
 	"github.com/frwd-1/SeerProtocol/p2p/snode"
 	"github.com/frwd-1/SeerProtocol/p2p/snr"
 )
@@ -1027,7 +1028,7 @@ func (srv *Server) checkpoint(c *conn, stage chan<- *conn) error {
 	return <-c.cont
 }
 
-func (srv *Server) launchPeer(c *conn) *Peer {
+func (srv *Server) launchPeer(c *conn) *p2p.Peer {
 	p := newPeer(srv.log, c, srv.Protocols)
 	if srv.EnableMsgEvents {
 		// If message events are enabled, pass the peerFeed
@@ -1039,12 +1040,12 @@ func (srv *Server) launchPeer(c *conn) *Peer {
 }
 
 // runPeer runs in its own goroutine for each peer.
-func (srv *Server) runPeer(p *Peer) {
+func (srv *Server) runPeer(p *p2p.Peer) {
 	if srv.newPeerHook != nil {
 		srv.newPeerHook(p)
 	}
-	srv.peerFeed.Send(&PeerEvent{
-		Type:          PeerEventTypeAdd,
+	srv.peerFeed.Send(&p2p.PeerEvent{
+		Type:          p2p.PeerEventTypeAdd,
 		Peer:          p.ID(),
 		RemoteAddress: p.RemoteAddr().String(),
 		LocalAddress:  p.LocalAddr().String(),
@@ -1062,8 +1063,8 @@ func (srv *Server) runPeer(p *Peer) {
 	// after the send to delpeer so subscribers have a consistent view of
 	// the peer set (i.e. Server.Peers() doesn't include the peer when the
 	// event is received).
-	srv.peerFeed.Send(&PeerEvent{
-		Type:          PeerEventTypeDrop,
+	srv.peerFeed.Send(&p2p.PeerEvent{
+		Type:          p2p.PeerEventTypeDrop,
 		Peer:          p.ID(),
 		Error:         err.Error(),
 		RemoteAddress: p.RemoteAddr().String(),
@@ -1076,7 +1077,7 @@ type NodeInfo struct {
 	ID    string `json:"id"`    // Unique node identifier (also the encryption key)
 	Name  string `json:"name"`  // Name of the node, including client type, version, OS, custom data
 	snode string `json:"snode"` // snode URL for adding this peer from remote peers
-	sNR   string `json:"snr"`   // Ethereum Node Record
+	SNR   string `json:"snr"`   // Ethereum Node Record
 	IP    string `json:"ip"`    // IP address of the node
 	Ports struct {
 		Discovery int `json:"discovery"` // UDP listening port for discovery protocol
@@ -1100,7 +1101,7 @@ func (srv *Server) NodeInfo() *NodeInfo {
 	}
 	info.Ports.Discovery = node.UDP()
 	info.Ports.Listener = node.TCP()
-	info.sNR = node.String()
+	info.SNR = node.String()
 
 	// Gather all the running protocol infos (only once per protocol type)
 	for _, proto := range srv.Protocols {
@@ -1116,9 +1117,9 @@ func (srv *Server) NodeInfo() *NodeInfo {
 }
 
 // PeersInfo returns an array of metadata objects describing connected peers.
-func (srv *Server) PeersInfo() []*PeerInfo {
+func (srv *Server) PeersInfo() []*p2p.PeerInfo {
 	// Gather all the generic and sub-protocol specific infos
-	infos := make([]*PeerInfo, 0, srv.PeerCount())
+	infos := make([]*p2p.PeerInfo, 0, srv.PeerCount())
 	for _, peer := range srv.Peers() {
 		if peer != nil {
 			infos = append(infos, peer.Info())
