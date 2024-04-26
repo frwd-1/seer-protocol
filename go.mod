@@ -33,6 +33,7 @@ require (
 	github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb // indirect
 	github.com/google/gopacket v1.1.19 // indirect
 	github.com/google/pprof v0.0.0-20240207164012-fb44976bdcd5 // indirect
 	github.com/gorilla/websocket v1.5.1 // indirect
@@ -86,6 +87,7 @@ require (
 	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/supranational/blst v0.3.11 // indirect
+	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
 	go.uber.org/dig v1.17.1 // indirect
