@@ -22,9 +22,8 @@ import (
 
 	"github.com/ethereum/go-ethereum/common/mclock"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/ethereum/go-ethereum/p2p/enr"
 	"github.com/ethereum/go-ethereum/p2p/nat"
-
-	"github.com/frwd-1/SeerProtocol/p2p/snr"
 )
 
 const (
@@ -175,10 +174,10 @@ func (srv *Server) portMappingLoop() {
 					log.Info("NAT mapped port")
 				}
 
-				// Update port in local SNR.
+				// Update port in local ENR.
 				switch m.protocol {
 				case "TCP":
-					srv.localnode.Set(snr.TCP(m.extPort))
+					srv.localnode.Set(enr.TCP(m.extPort))
 				case "UDP":
 					srv.localnode.SetFallbackUDP(m.extPort)
 				}

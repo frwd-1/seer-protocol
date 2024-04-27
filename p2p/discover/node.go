@@ -26,14 +26,13 @@ import (
 
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
-
-	"github.com/frwd-1/SeerProtocol/p2p/snode"
+	"github.com/ethereum/go-ethereum/p2p/enode"
 )
 
 // node represents a host on the network.
 // The fields of Node may not be modified.
 type node struct {
-	snode.Node
+	enode.Node
 	addedAt        time.Time // time when the node was added to the table
 	livenessChecks uint      // how often liveness was checked
 }
@@ -61,15 +60,15 @@ func decodePubkey(curve elliptic.Curve, e []byte) (*ecdsa.PublicKey, error) {
 	return p, nil
 }
 
-func (e encPubkey) id() snode.ID {
-	return snode.ID(crypto.Keccak256Hash(e[:]))
+func (e encPubkey) id() enode.ID {
+	return enode.ID(crypto.Keccak256Hash(e[:]))
 }
 
-func wrapNode(n *snode.Node) *node {
+func wrapNode(n *enode.Node) *node {
 	return &node{Node: *n}
 }
 
-func wrapNodes(ns []*snode.Node) []*node {
+func wrapNodes(ns []*enode.Node) []*node {
 	result := make([]*node, len(ns))
 	for i, n := range ns {
 		result[i] = wrapNode(n)
@@ -77,12 +76,12 @@ func wrapNodes(ns []*snode.Node) []*node {
 	return result
 }
 
-func unwrapNode(n *node) *snode.Node {
+func unwrapNode(n *node) *enode.Node {
 	return &n.Node
 }
 
-func unwrapNodes(ns []*node) []*snode.Node {
-	result := make([]*snode.Node, len(ns))
+func unwrapNodes(ns []*node) []*enode.Node {
+	result := make([]*enode.Node, len(ns))
 	for i, n := range ns {
 		result[i] = unwrapNode(n)
 	}

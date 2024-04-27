@@ -41,7 +41,7 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/frwd-1/SeerProtocol/crypto"
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 var (

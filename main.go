@@ -14,8 +14,6 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 
-	"github.com/frwd-1/SeerProtocol/p2p/snode"
-
 	"github.com/libp2p/go-libp2p/core/host"
 )
 
@@ -45,15 +43,15 @@ func NewSeerNode(config NodeConfig) *SeerNode {
 		log.Fatalf("Failed to connect to Ethereum node: %v", err)
 	}
 
-	p2pHost, err := snode.NewHost()
-	if err != nil {
-		log.Fatalf("Failed to create P2P host: %v", err)
-	}
+	// p2pHost, err := enode.NewHost()
+	// if err != nil {
+	// 	log.Fatalf("Failed to create P2P host: %v", err)
+	// }
 
 	return &SeerNode{
 		config:    config,
 		ethClient: ethClient,
-		p2pHost:   p2pHost,
+		// p2pHost:   p2pHost,
 	}
 }
 

@@ -36,9 +36,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/metrics"
-
-	"github.com/frwd-1/SeerProtocol/p2p/netutil"
-	"github.com/frwd-1/SeerProtocol/p2p/snode"
+	"github.com/ethereum/go-ethereum/p2p/enode"
+	"github.com/ethereum/go-ethereum/p2p/netutil"
 )
 
 const (
@@ -72,7 +71,7 @@ type Table struct {
 	rand    *mrand.Rand       // source of randomness, periodically reseeded
 	ips     netutil.DistinctNetSet
 
-	db  *snode.DB // database of known nodes
+	db  *enode.DB // database of known nodes
 	net transport
 	cfg Config
 	log log.Logger
@@ -89,11 +88,11 @@ type Table struct {
 
 // transport is implemented by the UDP transports.
 type transport interface {
-	Self() *snode.Node
-	RequestENR(*snode.Node) (*snode.Node, error)
-	lookupRandom() []*snode.Node
-	lookupSelf() []*snode.Node
-	ping(*snode.Node) (seq uint64, err error)
+	Self() *enode.Node
+	RequestENR(*enode.Node) (*enode.Node, error)
+	lookupRandom() []*enode.Node
+	lookupSelf() []*enode.Node
+	ping(*enode.Node) (seq uint64, err error)
 }
 
 // bucket contains nodes, ordered by their last activity. the entry
@@ -105,7 +104,7 @@ type bucket struct {
 	index        int
 }
 
-func newTable(t transport, db *snode.DB, cfg Config) (*Table, error) {
+func newTable(t transport, db *enode.DB, cfg Config) (*Table, error) {
 	cfg = cfg.withDefaults()
 	tab := &Table{
 		net:        t,
@@ -134,7 +133,7 @@ func newTable(t transport, db *snode.DB, cfg Config) (*Table, error) {
 	return tab, nil
 }
 
-func newMeteredTable(t transport, db *snode.DB, cfg Config) (*Table, error) {
+func newMeteredTable(t transport, db *enode.DB, cfg Config) (*Table, error) {
 	tab, err := newTable(t, db, cfg)
 	if err != nil {
 		return nil, err
@@ -151,7 +150,7 @@ func newMeteredTable(t transport, db *snode.DB, cfg Config) (*Table, error) {
 }
 
 // Nodes returns all nodes contained in the table.
-func (tab *Table) Nodes() []*snode.Node {
+func (tab *Table) Nodes() []*enode.Node {
 	if !tab.isInitDone() {
 		return nil
 	}
@@ -159,7 +158,7 @@ func (tab *Table) Nodes() []*snode.Node {
 	tab.mutex.Lock()
 	defer tab.mutex.Unlock()
 
-	var nodes []*snode.Node
+	var nodes []*enode.Node
 	for _, b := range &tab.buckets {
 		for _, n := range b.entries {
 			nodes = append(nodes, unwrapNode(n))
@@ -168,7 +167,7 @@ func (tab *Table) Nodes() []*snode.Node {
 	return nodes
 }
 
-func (tab *Table) self() *snode.Node {
+func (tab *Table) self() *enode.Node {
 	return tab.net.Self()
 }
 
@@ -182,7 +181,7 @@ func (tab *Table) seedRand() {
 }
 
 // getNode returns the node with the given ID or nil if it isn't in the table.
-func (tab *Table) getNode(id snode.ID) *snode.Node {
+func (tab *Table) getNode(id enode.ID) *enode.Node {
 	tab.mutex.Lock()
 	defer tab.mutex.Unlock()
 
@@ -204,7 +203,7 @@ func (tab *Table) close() {
 // setFallbackNodes sets the initial points of contact. These nodes
 // are used to connect to the network if the table is empty and there
 // are no known nodes in the database.
-func (tab *Table) setFallbackNodes(nodes []*snode.Node) error {
+func (tab *Table) setFallbackNodes(nodes []*enode.Node) error {
 	nursery := make([]*node, 0, len(nodes))
 	for _, n := range nodes {
 		if err := n.ValidateComplete(); err != nil {
@@ -240,7 +239,7 @@ func (tab *Table) refresh() <-chan struct{} {
 	return done
 }
 
-// loop schedules runs of doRefresh, doRevalidate and copyLivsnodes.
+// loop schedules runs of doRefresh, doRevalidate and copyLiveNodes.
 func (tab *Table) loop() {
 	var (
 		revalidate     = time.NewTimer(tab.nextRevalidateTime())
@@ -285,7 +284,7 @@ loop:
 			revalidate.Reset(tab.nextRevalidateTime())
 			revalidateDone = nil
 		case <-copyNodes.C:
-			go tab.copyLivsnodes()
+			go tab.copyLiveNodes()
 		case <-tab.closeReq:
 			break loop
 		}
@@ -413,9 +412,9 @@ func (tab *Table) nextRefreshTime() time.Duration {
 	return half + time.Duration(tab.rand.Int63n(int64(half)))
 }
 
-// copyLivsnodes adds nodes from the table to the database if they have been in the table
+// copyLiveNodes adds nodes from the table to the database if they have been in the table
 // longer than seedMinTableTime.
-func (tab *Table) copyLivsnodes() {
+func (tab *Table) copyLiveNodes() {
 	tab.mutex.Lock()
 	defer tab.mutex.Unlock()
 
@@ -423,7 +422,7 @@ func (tab *Table) copyLivsnodes() {
 	for _, b := range &tab.buckets {
 		for _, n := range b.entries {
 			if n.livenessChecks > 0 && now.Sub(n.addedAt) >= seedMinTableTime {
-				tab.db.Updatsnode(unwrapNode(n))
+				tab.db.UpdateNode(unwrapNode(n))
 			}
 		}
 	}
@@ -436,7 +435,7 @@ func (tab *Table) copyLivsnodes() {
 // preferLive is true and the table contains any verified nodes, the result will not
 // contain unverified nodes. However, if there are no verified nodes at all, the result
 // will contain unverified nodes.
-func (tab *Table) findnodeByID(target snode.ID, nresults int, preferLive bool) *nodesByDistance {
+func (tab *Table) findnodeByID(target enode.ID, nresults int, preferLive bool) *nodesByDistance {
 	tab.mutex.Lock()
 	defer tab.mutex.Unlock()
 
@@ -444,24 +443,24 @@ func (tab *Table) findnodeByID(target snode.ID, nresults int, preferLive bool) *
 	// buckets, so this solution should be fine. The worst-case complexity of this loop
 	// is O(tab.len() * nresults).
 	nodes := &nodesByDistance{target: target}
-	livsnodes := &nodesByDistance{target: target}
+	liveNodes := &nodesByDistance{target: target}
 	for _, b := range &tab.buckets {
 		for _, n := range b.entries {
 			nodes.push(n, nresults)
 			if preferLive && n.livenessChecks > 0 {
-				livsnodes.push(n, nresults)
+				liveNodes.push(n, nresults)
 			}
 		}
 	}
 
-	if preferLive && len(livsnodes.entries) > 0 {
-		return livsnodes
+	if preferLive && len(liveNodes.entries) > 0 {
+		return liveNodes
 	}
 	return nodes
 }
 
-// appendLivsnodes adds nodes at the given distance to the result slice.
-func (tab *Table) appendLivsnodes(dist uint, result []*snode.Node) []*snode.Node {
+// appendLiveNodes adds nodes at the given distance to the result slice.
+func (tab *Table) appendLiveNodes(dist uint, result []*enode.Node) []*enode.Node {
 	if dist > 256 {
 		return result
 	}
@@ -492,7 +491,7 @@ func (tab *Table) len() (n int) {
 }
 
 // bucketLen returns the number of nodes in the bucket for the given ID.
-func (tab *Table) bucketLen(id snode.ID) int {
+func (tab *Table) bucketLen(id enode.ID) int {
 	tab.mutex.Lock()
 	defer tab.mutex.Unlock()
 
@@ -500,8 +499,8 @@ func (tab *Table) bucketLen(id snode.ID) int {
 }
 
 // bucket returns the bucket for the given node ID hash.
-func (tab *Table) bucket(id snode.ID) *bucket {
-	d := snode.LogDist(tab.self().ID(), id)
+func (tab *Table) bucket(id enode.ID) *bucket {
+	d := enode.LogDist(tab.self().ID(), id)
 	return tab.bucketAtDistance(d)
 }
 
@@ -541,7 +540,7 @@ func (tab *Table) addSeenNode(n *node) {
 
 	// Add to end of bucket:
 	b.entries = append(b.entries, n)
-	b.replacements = deletsnode(b.replacements, n)
+	b.replacements = deleteNode(b.replacements, n)
 	n.addedAt = time.Now()
 
 	if tab.nodeAddedHook != nil {
@@ -585,7 +584,7 @@ func (tab *Table) addVerifiedNode(n *node) {
 
 	// Add to front of bucket.
 	b.entries, _ = pushNode(b.entries, n, bucketSize)
-	b.replacements = deletsnode(b.replacements, n)
+	b.replacements = deleteNode(b.replacements, n)
 	n.addedAt = time.Now()
 
 	if tab.nodeAddedHook != nil {
@@ -658,7 +657,7 @@ func (tab *Table) replace(b *bucket, last *node) *node {
 		return nil
 	}
 	r := b.replacements[tab.rand.Intn(len(b.replacements))]
-	b.replacements = deletsnode(b.replacements, r)
+	b.replacements = deleteNode(b.replacements, r)
 	b.entries[len(b.entries)-1] = r
 	tab.removeIP(b, last.IP())
 	return r
@@ -693,14 +692,14 @@ func (tab *Table) deleteInBucket(b *bucket, n *node) {
 	if !contains(b.entries, n.ID()) {
 		return
 	}
-	b.entries = deletsnode(b.entries, n)
+	b.entries = deleteNode(b.entries, n)
 	tab.removeIP(b, n.IP())
 	if tab.nodeRemovedHook != nil {
 		tab.nodeRemovedHook(b, n)
 	}
 }
 
-func contains(ns []*node, id snode.ID) bool {
+func contains(ns []*node, id enode.ID) bool {
 	for _, n := range ns {
 		if n.ID() == id {
 			return true
@@ -720,8 +719,8 @@ func pushNode(list []*node, n *node, max int) ([]*node, *node) {
 	return list, removed
 }
 
-// deletsnode removes n from list.
-func deletsnode(list []*node, n *node) []*node {
+// deleteNode removes n from list.
+func deleteNode(list []*node, n *node) []*node {
 	for i := range list {
 		if list[i].ID() == n.ID() {
 			return append(list[:i], list[i+1:]...)
@@ -733,13 +732,13 @@ func deletsnode(list []*node, n *node) []*node {
 // nodesByDistance is a list of nodes, ordered by distance to target.
 type nodesByDistance struct {
 	entries []*node
-	target  snode.ID
+	target  enode.ID
 }
 
 // push adds the given node to the list, keeping the total size below maxElems.
 func (h *nodesByDistance) push(n *node, maxElems int) {
 	ix := sort.Search(len(h.entries), func(i int) bool {
-		return snode.DistCmp(h.target, h.entries[i].ID(), n.ID()) > 0
+		return enode.DistCmp(h.target, h.entries[i].ID(), n.ID()) > 0
 	})
 
 	end := len(h.entries)

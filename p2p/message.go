@@ -25,9 +25,8 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/event"
+	"github.com/ethereum/go-ethereum/p2p/enode"
 	"github.com/ethereum/go-ethereum/rlp"
-
-	"github.com/frwd-1/SeerProtocol/p2p/snode"
 )
 
 // Msg defines the structure of a p2p message.
@@ -259,7 +258,7 @@ type msgEventer struct {
 	MsgReadWriter
 
 	feed          *event.Feed
-	peerID        snode.ID
+	peerID        enode.ID
 	Protocol      string
 	localAddress  string
 	remoteAddress string
@@ -267,7 +266,7 @@ type msgEventer struct {
 
 // newMsgEventer returns a msgEventer which sends message events to the given
 // feed
-func newMsgEventer(rw MsgReadWriter, feed *event.Feed, peerID snode.ID, proto, remote, local string) *msgEventer {
+func newMsgEventer(rw MsgReadWriter, feed *event.Feed, peerID enode.ID, proto, remote, local string) *msgEventer {
 	return &msgEventer{
 		MsgReadWriter: rw,
 		feed:          feed,

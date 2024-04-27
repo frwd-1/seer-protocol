@@ -22,10 +22,8 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/log"
-
-	"github.com/frwd-1/SeerProtocol/p2p/discover/v5wire"
-
-	"github.com/frwd-1/SeerProtocol/p2p/snode"
+	"github.com/ethereum/go-ethereum/p2p/discover/v5wire"
+	"github.com/ethereum/go-ethereum/p2p/enode"
 )
 
 // This is a limit for the number of concurrent talk requests.
@@ -40,7 +38,7 @@ const talkHandlerLaunchTimeout = 400 * time.Millisecond
 // Note that talk handlers are expected to come up with a response very quickly, within at
 // most 200ms or so. If the handler takes longer than that, the remote end may time out
 // and wont receive the response.
-type TalkRequestHandler func(snode.ID, *net.UDPAddr, []byte) []byte
+type TalkRequestHandler func(enode.ID, *net.UDPAddr, []byte) []byte
 
 type talkSystem struct {
 	transport *UDPv5
@@ -72,7 +70,7 @@ func (t *talkSystem) register(protocol string, handler TalkRequestHandler) {
 }
 
 // handleRequest handles a talk request.
-func (t *talkSystem) handleRequest(id snode.ID, addr *net.UDPAddr, req *v5wire.TalkRequest) {
+func (t *talkSystem) handleRequest(id enode.ID, addr *net.UDPAddr, req *v5wire.TalkRequest) {
 	t.mutex.Lock()
 	handler, ok := t.handlers[req.Protocol]
 	t.mutex.Unlock()
