@@ -1,6 +1,6 @@
 # SeerProtocol
 
-A project for the decentralized identification of all on-chain nodes and relationships
+A project for the distributed and open source identification of all on-chain nodes and relationships
 
 # Tenets
 
