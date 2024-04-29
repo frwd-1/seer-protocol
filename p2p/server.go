@@ -15,6 +15,7 @@
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
 // Package p2p implements the Ethereum p2p network protocols.
+// implement server
 package p2p
 
 import (
