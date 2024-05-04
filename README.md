@@ -12,9 +12,9 @@ The following tenets are laid out here to establish and formalize the fundamenta
 
 - EVM based chains limit their identification of actions on their network only to a limited scope of valid state transitions and invalid state transitions. Consider the DAO hack.
 
-- Smart contracts enable unlimited possible actions
+- Smart contracts enable unlimited possible actions.
 
-- Instead of just validating actions, it is possible to use a consensus protocol to define, name, and identify the broader scope of possible actions.
+- Instead of only validating actions, we can use a consensus protocol to define, name, and identify the broader scope of possible actions.
 
 - As the broader scope of onchain actions are named and identified, users and protocols can make judgements about what they value.
 
