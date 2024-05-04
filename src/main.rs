@@ -11,3 +11,6 @@ fn main() {
 
     println!("You guessed: {}", guess);
 }
+
+
+// Path: seer_protocol/Cargo.toml
