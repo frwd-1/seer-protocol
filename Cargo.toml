@@ -1,3 +1,4 @@
+workspace = { members = ["seer_network"] }
 [package]
 name = "seer_protocol"
 version = "0.1.0"

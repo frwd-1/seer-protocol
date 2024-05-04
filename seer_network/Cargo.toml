@@ -1,0 +1,12 @@
+[package]
+name = "seer_network"
+version = "0.1.0"
+edition = "2024"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+reth-network = { git = "https://github.com/paradigmxyz/reth", branch = "main", path = "crates/net/network" }
+reth-primitives = { git = "https://github.com/paradigmxyz/reth", branch = "main", path = "crates/primitives" }
+reth-provider = { git = "https://github.com/paradigmxyz/reth", branch = "main", path = "crates/provider" }
+tokio = { version = "1", features = ["full"] }
