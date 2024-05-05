@@ -1,4 +1,3 @@
-use log::{debug, info};
 use reth_network::{config::rng_secret_key, NetworkConfig, NetworkManager};
 use reth_primitives::mainnet_nodes;
 use reth_provider::test_utils::NoopProvider;
@@ -6,18 +5,21 @@ use tokio::main;
 
 #[tokio::main]
 async fn main() {
-    env_logger::init();
-    debug!("Starting network setup...");
+    println!("starting network setup");
     // Set up the block provider (for testing purposes, using a NoopProvider)
     let client = NoopProvider::default();
+    println!("client: {:?}", client);
 
     // Generate a local key for encrypting sessions and identifying our node
     let local_key = rng_secret_key();
+    println!("local_key: {:?}", local_key);
 
     // Configure the network
     let config = NetworkConfig::builder(local_key)
-        .boot_nodes(mainnet_nodes()) // Use Ethereum mainnet nodes for bootstrapping
+        .boot_nodes(mainnet_nodes()) // Todo: change to seer nodes
         .build(client);
+
+    println!("config: {:?}", config);
 
     // Create the network manager instance
     let network = NetworkManager::new(config).await.unwrap();
@@ -27,14 +29,18 @@ async fn main() {
 
     // Spawn the network manager to run asynchronously
     tokio::task::spawn(network);
+    println!("network manager spawned");
 
     // Example interaction with the network
     // e.g., handle.send(...) or handle.request(...)
 
     // Keep the main task alive to keep the network running.
     loop {
+        println!("main task running");
         tokio::time::sleep(tokio::time::Duration::from_secs(10)).await;
+        println!("main task woke up");
     }
+    println!("network setup complete");
 }
 
 #[cfg(test)]
@@ -57,7 +63,7 @@ mod tests {
         // Implement your test
         // For example, you might check if the network connects to a node or how many nodes are connected
         assert!(
-            network.peers().await.is_empty(),
+            network.peer_id().is_empty(),
             "Should initially connect to no peers"
         );
     }

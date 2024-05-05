@@ -6,9 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+log = "0.4"
 reth-network = { git = "https://github.com/paradigmxyz/reth", branch = "main" }
-reth-primitives = { git = "https://github.com/paradigmxyz/reth", branch = "main", features = [
-    "test_utils",
+reth-primitives = { git = "https://github.com/paradigmxyz/reth", branch = "main" }
+reth-provider = { git = "https://github.com/paradigmxyz/reth", branch = "main", features = [
+    "test-utils",
 ] }
-reth-provider = { git = "https://github.com/paradigmxyz/reth", branch = "main" }
 tokio = { version = "1", features = ["full"] }
