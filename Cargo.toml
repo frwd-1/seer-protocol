@@ -1,4 +1,3 @@
-workspace = { members = ["seer_network"] }
 [package]
 name = "seer_protocol"
 version = "0.1.0"
@@ -7,3 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+reth = { git = "https://github.com/paradigmxyz/reth", branch = "main" }
+reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth", branch = "main" }
+reth-exex = { git = "https://github.com/paradigmxyz/reth", branch = "main" }

@@ -10,7 +10,7 @@ The following tenets are laid out here to establish and formalize the fundamenta
 
 - A consensus protocol is historically defined by these rules as agreed upon by a peer to peer network. Nodes come to consensus on the valid hash of each new state
 
-- EVM based chains limit their identification of actions on their network only to a limited scope of valid state transitions and invalid state transitions. Consider the DAO hack.
+- EVM based chains limit their identification of actions on their network only to a limited scope of valid state transitions and invalid state transitions. But even actions that are technically valid can have unintended consequences - consider the DAO hack.
 
 - Smart contracts enable unlimited possible actions.
 
