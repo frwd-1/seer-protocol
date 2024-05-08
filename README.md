@@ -18,7 +18,7 @@ The following tenets are laid out here to establish and formalize the fundamenta
 
 - As the broader scope of onchain actions are named and identified, users and protocols can make judgements about what they value.
 
-- Without user interfaces, the broader scope of onchain actions enabled by smart contracts are largely invisible to ordinary users, making them vulnerable to "hidden actions". ie, those that cannot easily find and interpret the following code in a smart contract are defenseless:
+- Without user interfaces, the broader scope of onchain actions enabled by smart contracts are largely invisible to ordinary users, making them vulnerable to "hidden actions". ie, those that cannot easily find and interpret the code in a smart contract are defenseless:
 
 ```
 if (x == true) {
