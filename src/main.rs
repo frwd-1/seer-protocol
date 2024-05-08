@@ -21,6 +21,8 @@ async fn my_exex<Node: reth_node_api::FullNodeComponents>(
     Ok(())
 }
 
+// setup to peer with other nodes
+
 fn main() -> eyre::Result<()> {
     reth::cli::Cli::parse_args().run(|builder, _| async move {
         let handle = builder
