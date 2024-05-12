@@ -1,24 +1,28 @@
 # SeerProtocol
 
-A project for the distributed and open source identification of all on-chain nodes and relationships
+The Seer Protocol is a project for the distributed and open source identification of all on-chain nodes and relationships
 
 # Tenets
 
-The following tenets are laid out here to establish and formalize the fundamental assumptions of the Seer Protocol
+"An important and general problem seems to be that of tagging a negative behavior source for future recognition." - Nick Szabo, 1996
 
-- State root hash defines a valid identity based on rules that allow certain actions (valid identities) and disallow others (invalid identities). This is to say - action is identity onchain
+"Don't make a fool of yourself. Reputations matter" - Timothy May, Cyphernomicon, 1994
 
-- A consensus protocol is historically defined by these rules as agreed upon by a peer to peer network. Nodes come to consensus on the valid hash of each new state
+"We should allow people to develop reputations based on the quality of their ideas, rather than their job, wealth, age, or status." - Hal Finney, 1993
 
-- EVM based chains limit their identification of actions on their network only to a limited scope of valid state transitions and invalid state transitions. But even actions that are technically valid can have unintended consequences - consider the DAO hack.
+"The idea here is that the ultimate solution to the low
+signal-to-noise ratio on the nets is not a matter of
+forcing people to "stand behind their words". People can
+stand behind all kinds of idiotic ideas. Rather, there
+will need to be developed better systems for filtering news
+and mail, for developing "digital reputations" which can be
+stamped on one's postings to pass through these smart
+filters, and even applying these reputations to pseudonyms.
+In such a system, the fact that someone is posting or
+mailing pseudonymously is not a problem, since nuisance
+posters won't be able to get through." Hal Finney, 1993
 
-- Smart contracts enable unlimited possible actions.
-
-- Instead of only validating actions, we can use a consensus protocol to define, name, and identify the broader scope of possible actions.
-
-- As the broader scope of onchain actions are named and identified, users and protocols can make judgements about what they value.
-
-- Without user interfaces, the broader scope of onchain actions enabled by smart contracts are largely invisible to ordinary users, making them vulnerable to "hidden actions". ie, those that cannot easily find and interpret the code in a smart contract are defenseless:
+Without user interfaces, the broad scope of onchain actions enabled by smart contracts are largely invisible to ordinary users, making them vulnerable to "hidden actions"
 
 ```
 if (x == true) {
