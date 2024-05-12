@@ -1,8 +1,10 @@
 # SeerProtocol
 
-The Seer Protocol is a project for the distributed and open source identification of all on-chain nodes and relationships
+The Seer Protocol is a project to enable a distributed and open source reputation system onchain that preserves privacy and enables a more secure ecosystem than has previously been possible.
 
 # Tenets
+
+It is a myth that onchain activity was never intended to be held accountable and holding malicious actors accountable does not need to come at the cost of privacy
 
 "An important and general problem seems to be that of tagging a negative behavior source for future recognition." - Nick Szabo, 1996
 
