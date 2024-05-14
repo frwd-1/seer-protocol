@@ -6915,9 +6915,13 @@ dependencies = [
 name = "seer_protocol"
 version = "0.1.0"
 dependencies = [
+ "eyre",
+ "futures",
  "reth",
  "reth-exex",
+ "reth-node-api",
  "reth-node-ethereum",
+ "tokio",
 ]
 
 [[package]]

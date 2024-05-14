@@ -6,6 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+eyre = "0.6"
+futures = "0.3"
 reth = { git = "https://github.com/paradigmxyz/reth", branch = "main" }
 reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth", branch = "main" }
 reth-exex = { git = "https://github.com/paradigmxyz/reth", branch = "main" }
+tokio = { version = "1", features = ["full"] }
+reth-node-api = { git = "https://github.com/paradigmxyz/reth", branch = "main" }
