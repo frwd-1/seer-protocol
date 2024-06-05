@@ -1,6 +1,7 @@
 mod db;
 mod heuristics;
 mod p2p;
+mod token;
 
 use crate::db::LabelDatabase;
 use crate::heuristics::{
@@ -8,11 +9,14 @@ use crate::heuristics::{
     Heuristic,
 };
 use crate::p2p::P2PNetwork;
+use crate::token::SeerToken;
+use ethers::types::Address;
 use eyre::Result;
 use futures::StreamExt;
 use reth_exex::{ExExContext, ExExNotification};
 use reth_node_api::FullNodeComponents;
 use reth_node_ethereum::EthereumNode;
+use std::collections::HashMap;
 use std::future::Future;
 use tokio::task;
 
@@ -31,11 +35,19 @@ impl CustomNodeConfig {
     }
 }
 
+#[derive(Clone)]
+struct Stake {
+    amount: U256,
+    active: bool,
+}
+
 async fn exex<Node: FullNodeComponents>(
     mut ctx: ExExContext<Node>,
     heuristics: Vec<Box<dyn Heuristic + Send + Sync>>,
     mut db: LabelDatabase,
     p2p_network: P2PNetwork,
+    token: SeerToken,
+    stakes: HashMap<Address, Stake>,
 ) -> Result<()> {
     let mut p2p_network = p2p_network;
     task::spawn(async move {
@@ -72,17 +84,19 @@ fn exex_wrapper<Node: FullNodeComponents>(
     heuristics: Vec<Box<dyn Heuristic + Send + Sync>>,
     db: LabelDatabase,
     p2p_network: P2PNetwork,
+    token: SeerToken,
+    stakes: HashMap<Address, Stake>,
 ) -> impl Future<Output = eyre::Result<impl Future<Output = eyre::Result<()>>>> + Send {
-    async move { Ok(async move { exex(ctx, heuristics, db, p2p_network).await }) }
+    async move { Ok(async move { exex(ctx, heuristics, db, p2p_network, token, stakes).await }) }
 }
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
     // Set up custom configuration
-    let rpc_url = ""; // Update with RPC URL from the Kurtosis enclave
+    let rpc_url = ""; // Update with the actual RPC URL from the Kurtosis enclave
     let custom_config = CustomNodeConfig::new(rpc_url.to_string());
 
-    // Set the environment variable for the RPC URL
+    // Set the environment variable for the RPC URL if needed
     std::env::set_var("RETH_RPC_URL", custom_config.rpc_url());
 
     // Initialize heuristics
@@ -98,12 +112,28 @@ async fn main() -> eyre::Result<()> {
     // Initialize P2P network
     let mut p2p_network = P2PNetwork::new()?;
 
+    // Initialize Seer token
+    let token = SeerToken::new();
+
+    // Initialize staking
+    let mut stakes: HashMap<Address, Stake> = HashMap::new();
+
+    // Example: Add a stake
+    let address = "0xYourEthereumAddress".parse().unwrap();
+    stakes.insert(
+        address,
+        Stake {
+            amount: U256::from(1000),
+            active: true,
+        },
+    );
+
     // Runs the reth node
     reth::cli::Cli::parse_args().run(|builder, _| async move {
         let handle = builder
             .node(EthereumNode::default())
             .install_exex("Minimal", |ctx| {
-                exex_wrapper(ctx, heuristics.clone(), db, p2p_network)
+                exex_wrapper(ctx, heuristics.clone(), db, p2p_network, token, stakes)
             })
             .launch()
             .await?;
