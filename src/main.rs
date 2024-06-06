@@ -5,14 +5,13 @@ mod token;
 
 use crate::db::LabelDatabase;
 use crate::heuristics::{
-    airdrop_farming::AirdropFarming, money_laundering::MoneyLaundering, wash_trading::WashTrading,
+    airdrop_farming::AirdropFarming, flow_through::FlowThrough, wash_trading::WashTrading,
     Heuristic,
 };
 use crate::p2p::P2PNetwork;
 use crate::token::SeerToken;
 use ethers::types::Address;
 use eyre::Result;
-use futures::StreamExt;
 use reth_exex::{ExExContext, ExExNotification};
 use reth_node_api::FullNodeComponents;
 use reth_node_ethereum::EthereumNode;
@@ -66,13 +65,28 @@ async fn exex<Node: FullNodeComponents>(
 
         match &notification {
             ExExNotification::ChainCommitted { new: _ } => {
-                // Handle chain committed event
+                // Handle new committed blocks
+                for block in new {
+                    for tx in &block.transactions {
+                        // Extract `from` and `to` addresses from the transaction
+                        let from = tx.from;
+                        let to = tx.to.unwrap_or_default();
+
+                        // Process each transaction with the heuristics
+                        for heuristic in &heuristics {
+                            heuristic.apply(tx, &mut db);
+                        }
+
+                        // Here you can also add any additional processing for the addresses
+                        println!("Transaction from: {:?} to: {:?}", from, to);
+                    }
+                }
             }
             ExExNotification::ChainReorged { old: _, new: _ } => {
-                // Handle chain reorganization event
+                // Not sure if I need this yet... Handle chain reorganization event
             }
             ExExNotification::ChainReverted { old: _ } => {
-                // Handle chain reverted event
+                // Not sure if I need this yet... Handle chain reverted event
             }
         };
     }
@@ -101,8 +115,10 @@ async fn main() -> eyre::Result<()> {
 
     // Initialize heuristics
     let heuristics: Vec<Box<dyn Heuristic + Send + Sync>> = vec![
-        Box::new(AirdropFarming),
-        Box::new(MoneyLaundering),
+        Box::new(AirdropFarming::new(
+            "http://127.0.0.1:5000/transaction".to_string(),
+        )),
+        Box::new(FlowThrough),
         Box::new(WashTrading),
     ];
 
@@ -118,8 +134,8 @@ async fn main() -> eyre::Result<()> {
     // Initialize staking
     let mut stakes: HashMap<Address, Stake> = HashMap::new();
 
-    // Example: Add a stake
-    let address = "0xYourEthereumAddress".parse().unwrap();
+    // Add a stake
+    let address = "0xEthereumAddress".parse().unwrap();
     stakes.insert(
         address,
         Stake {

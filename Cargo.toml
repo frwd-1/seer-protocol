@@ -13,3 +13,10 @@ reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth", branch = "ma
 reth-exex = { git = "https://github.com/paradigmxyz/reth", branch = "main" }
 tokio = { version = "1", features = ["full"] }
 reth-node-api = { git = "https://github.com/paradigmxyz/reth", branch = "main" }
+reqwest = { version = "0.11", features = ["json"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+ethers = { version = "0.5", features = ["abigen", "ws"] }
+
+[patch.crates-io]
+zeroize = "=1.4.3"
