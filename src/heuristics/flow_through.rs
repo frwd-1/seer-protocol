@@ -1,12 +1,47 @@
-use crate::db::LabelDatabase;
-use crate::heuristics::Heuristic;
-use reth_exex::ExExNotification;
+// use crate::db::LabelDatabase;
+// use crate::heuristics::Heuristic;
+// use reqwest::Client;
+// use reth_exex::ExExNotification;
+// use reth_primitives::TransactionSigned;
+// use serde::Serialize;
+// pub struct FlowThrough;
 
-pub struct FlowThrough;
+// impl Heuristic for FlowThrough {
+//     fn apply_transaction(&self, tx_signed: &TransactionSigned, db: &mut LabelDatabase) {
+//         // Extract the transaction from TransactionSigned
+//         let tx = &tx_signed.transaction;
 
-impl Heuristic for FlowThrough {
-    fn apply(&self, notification: &ExExNotification, db: &mut LabelDatabase) {
-        // Implement logic for detecting flow through and update db
-        db.insert("flow_through_key", "flow_through_value");
-    }
-}
+//         // get this from the context?
+//         // For now, using a placeholder since block_number is not directly part of the transaction
+//         let block_number = 0; // TODO: Update this
+
+//         // Extract the `from` address by recovering the signer
+//         let from = tx_signed.recover_signer().unwrap_or_default();
+
+//         // Extract the `to` address
+//         let to = tx.to().unwrap_or_default();
+
+//         let transaction_event = TransactionEvent {
+//             network: Network {
+//                 name: "your_network".to_string(),
+//             },
+//             block_number: block_number,
+//             from: format!("{:?}", from),
+//             to: format!("{:?}", to),
+//             // Populate other fields
+//         };
+
+//         let url = self.url.clone();
+//         let client = self.client.clone();
+//         tokio::spawn(async move {
+//             let response = client.post(&url).json(&transaction_event).send().await;
+
+//             match response {
+//                 Ok(res) => println!("Response: {:?}", res),
+//                 Err(err) => eprintln!("Error: {:?}", err),
+//             }
+//         });
+
+//         db.insert("airdrop_farming_key", "airdrop_farming_value");
+//     }
+// }

@@ -10,7 +10,7 @@ use crate::heuristics::{
 };
 use crate::p2p::P2PNetwork;
 use crate::token::SeerToken;
-use ethers::types::Address;
+use alloy_primitives::{Address, U256};
 use eyre::Result;
 use reth_exex::{ExExContext, ExExNotification};
 use reth_node_api::FullNodeComponents;
@@ -34,6 +34,7 @@ impl CustomNodeConfig {
     }
 }
 
+// proof of stake?
 #[derive(Clone)]
 struct Stake {
     amount: U256,
@@ -56,6 +57,7 @@ async fn exex<Node: FullNodeComponents>(
     });
 
     while let Some(notification) = ctx.notifications.recv().await {
+        // Call heuristic apply for notification
         for heuristic in &heuristics {
             heuristic.apply(&notification, &mut db);
         }
@@ -64,29 +66,22 @@ async fn exex<Node: FullNodeComponents>(
         p2p_network.broadcast("New state update".to_string());
 
         match &notification {
-            ExExNotification::ChainCommitted { new: _ } => {
+            ExExNotification::ChainCommitted { new } => {
                 // Handle new committed blocks
-                for block in new {
-                    for tx in &block.transactions {
-                        // Extract `from` and `to` addresses from the transaction
-                        let from = tx.from;
-                        let to = tx.to.unwrap_or_default();
-
+                for block in new.blocks_iter() {
+                    for tx in &block.body {
                         // Process each transaction with the heuristics
                         for heuristic in &heuristics {
-                            heuristic.apply(tx, &mut db);
+                            heuristic.apply_transaction(tx, &mut db, &notification);
                         }
-
-                        // Here you can also add any additional processing for the addresses
-                        println!("Transaction from: {:?} to: {:?}", from, to);
                     }
                 }
             }
             ExExNotification::ChainReorged { old: _, new: _ } => {
-                // Not sure if I need this yet... Handle chain reorganization event
+                // Handle chain reorganization
             }
             ExExNotification::ChainReverted { old: _ } => {
-                // Not sure if I need this yet... Handle chain reverted event
+                // Handle chain reverted event
             }
         };
     }
@@ -135,7 +130,7 @@ async fn main() -> eyre::Result<()> {
     let mut stakes: HashMap<Address, Stake> = HashMap::new();
 
     // Add a stake
-    let address = "0xEthereumAddress".parse().unwrap();
+    let address: Address = "0xEthereumAddress".parse().unwrap();
     stakes.insert(
         address,
         Stake {
