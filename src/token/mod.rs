@@ -1,5 +1,4 @@
-use ethers::prelude::*;
-use ethers::types::U256;
+use alloy_primitives::{Address, U256};
 use std::sync::{Arc, Mutex};
 use thiserror::Error;
 

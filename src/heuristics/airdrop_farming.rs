@@ -1,8 +1,8 @@
 use crate::db::LabelDatabase;
 use crate::heuristics::Heuristic;
 
+use reth::primitives::TransactionSigned;
 use reth_exex::ExExNotification;
-use reth_primitives::TransactionSigned;
 use serde::Serialize;
 
 #[derive(Serialize)]

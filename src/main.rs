@@ -11,12 +11,16 @@ use crate::heuristics::{
 use crate::p2p::P2PNetwork;
 use crate::token::SeerToken;
 use alloy_primitives::{Address, U256};
+use dotenv::dotenv;
 use eyre::Result;
-use reth_exex::{ExExContext, ExExNotification};
-use reth_node_api::FullNodeComponents;
-use reth_node_ethereum::EthereumNode;
+use log::{error, info};
+use reth::exex::{ExExContext, ExExNotification};
+use reth::reth_node_api::FullNodeComponents;
+use reth::reth_node_ethereum::EthereumNode;
 use std::collections::HashMap;
+use std::env;
 use std::future::Future;
+use std::sync::Arc;
 use tokio::task;
 
 #[derive(Debug)]
@@ -45,18 +49,22 @@ async fn exex<Node: FullNodeComponents>(
     mut ctx: ExExContext<Node>,
     heuristics: Vec<Box<dyn Heuristic + Send + Sync>>,
     mut db: LabelDatabase,
-    p2p_network: P2PNetwork,
+    p2p_network: Arc<P2PNetwork>,
     token: SeerToken,
     stakes: HashMap<Address, Stake>,
 ) -> Result<()> {
-    let mut p2p_network = p2p_network;
+    info!("Starting exex function");
+
+    let p2p_network_clone = Arc::clone(&p2p_network);
     task::spawn(async move {
-        if let Err(e) = p2p_network.run().await {
-            eprintln!("Error running P2P network: {:?}", e);
+        if let Err(e) = p2p_network_clone.run().await {
+            error!("Error running P2P network: {:?}", e);
         }
     });
 
     while let Some(notification) = ctx.notifications.recv().await {
+        info!("Received notification: {:?}", notification);
+
         // Call heuristic apply for notification
         for heuristic in &heuristics {
             heuristic.apply(&notification, &mut db);
@@ -67,6 +75,8 @@ async fn exex<Node: FullNodeComponents>(
 
         match &notification {
             ExExNotification::ChainCommitted { new } => {
+                info!("Handling ChainCommitted notification");
+
                 // Handle new committed blocks
                 for block in new.blocks_iter() {
                     for tx in &block.body {
@@ -78,10 +88,10 @@ async fn exex<Node: FullNodeComponents>(
                 }
             }
             ExExNotification::ChainReorged { old: _, new: _ } => {
-                // Handle chain reorganization
+                info!("Handling ChainReorged notification");
             }
             ExExNotification::ChainReverted { old: _ } => {
-                // Handle chain reverted event
+                info!("Handling ChainReverted notification");
             }
         };
     }
@@ -92,21 +102,32 @@ fn exex_wrapper<Node: FullNodeComponents>(
     ctx: ExExContext<Node>,
     heuristics: Vec<Box<dyn Heuristic + Send + Sync>>,
     db: LabelDatabase,
-    p2p_network: P2PNetwork,
+    p2p_network: Arc<P2PNetwork>,
     token: SeerToken,
     stakes: HashMap<Address, Stake>,
 ) -> impl Future<Output = eyre::Result<impl Future<Output = eyre::Result<()>>>> + Send {
-    async move { Ok(async move { exex(ctx, heuristics, db, p2p_network, token, stakes).await }) }
+    async move {
+        info!("Starting exex_wrapper");
+        Ok(async move { exex(ctx, heuristics, db, p2p_network, token, stakes).await })
+    }
 }
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
-    // Set up custom configuration
-    let rpc_url = ""; // Update with the actual RPC URL from the Kurtosis enclave
-    let custom_config = CustomNodeConfig::new(rpc_url.to_string());
+    dotenv().ok();
+    env_logger::init();
 
-    // Set the environment variable for the RPC URL if needed
-    std::env::set_var("RETH_RPC_URL", custom_config.rpc_url());
+    // Determine the environment (default to development)
+    let environment = env::var("ENV").unwrap_or_else(|_| "development".to_string());
+    info!("Running in {} environment", environment);
+
+    let rpc_url = match environment.as_str() {
+        "production" => env::var("PROD_RPC_URL").expect("PROD_RPC_URL must be set"),
+        _ => env::var("DEV_RPC_URL").expect("DEV_RPC_URL must be set"),
+    };
+    info!("Using RPC URL: {}", rpc_url);
+
+    let custom_config = CustomNodeConfig::new(rpc_url.clone());
 
     // Initialize heuristics
     let heuristics: Vec<Box<dyn Heuristic + Send + Sync>> = vec![
@@ -116,15 +137,19 @@ async fn main() -> eyre::Result<()> {
         Box::new(FlowThrough),
         Box::new(WashTrading),
     ];
+    info!("Initialized heuristics");
 
     // Initialize the label database
     let db = LabelDatabase::new();
+    info!("Initialized label database");
 
     // Initialize P2P network
-    let mut p2p_network = P2PNetwork::new()?;
+    let p2p_network = Arc::new(P2PNetwork::new()?);
+    info!("Initialized P2P network");
 
     // Initialize Seer token
     let token = SeerToken::new();
+    info!("Initialized Seer token");
 
     // Initialize staking
     let mut stakes: HashMap<Address, Stake> = HashMap::new();
@@ -138,18 +163,45 @@ async fn main() -> eyre::Result<()> {
             active: true,
         },
     );
+    info!("Initialized staking");
 
-    // Runs the reth node
-    reth::cli::Cli::parse_args().run(|builder, _| async move {
-        let handle = builder
-            .node(EthereumNode::default())
-            .install_exex("Minimal", |ctx| {
-                exex_wrapper(ctx, heuristics.clone(), db, p2p_network, token, stakes)
-            })
-            .launch()
-            .await?;
+    if environment == "production" {
+        // Runs the reth node
+        reth::cli::Cli::parse_args().run(|builder, _| async move {
+            let handle = builder
+                .node(EthereumNode::default())
+                .install_exex("Minimal", |ctx| {
+                    exex_wrapper(
+                        ctx,
+                        heuristics.clone(),
+                        db,
+                        p2p_network.clone(),
+                        token,
+                        stakes,
+                    )
+                })
+                .launch()
+                .await?;
 
-        handle.wait_for_node_exit().await?;
+            handle.wait_for_node_exit().await?;
+            Ok(())
+        })
+    } else {
+        // Setup ExEx context with the remote RPC
+        let ctx = ExExContext::new(
+            custom_config.rpc_url().to_string(),
+            heuristics.clone(),
+            db.clone(),
+            p2p_network.clone(),
+            token.clone(),
+            stakes.clone(),
+        )
+        .await?;
+        info!("Initialized ExEx context");
+
+        // Call the exex function with the ExEx context
+        exex(ctx, heuristics, db, p2p_network, token, stakes).await?;
+
         Ok(())
-    })
+    }
 }
