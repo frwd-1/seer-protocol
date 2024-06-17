@@ -1,6 +1,7 @@
 use crate::db::LabelDatabase;
 use crate::heuristics::Heuristic;
 
+use reqwest::Client;
 use reth::primitives::TransactionSigned;
 use reth_exex::ExExNotification;
 use serde::Serialize;

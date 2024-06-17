@@ -10,7 +10,7 @@ eyre = "0.6"
 futures = "0.3"
 reth = { git = "https://github.com/paradigmxyz/reth", branch = "main" }
 reth-exex = { git = "https://github.com/paradigmxyz/reth", package = "reth-exex" }
-
+reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth", branch = "main" }
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_derive = "1.0"
@@ -43,6 +43,7 @@ libp2p-core = "0.41.2"
 libp2p-swarm = "0.44.2"
 libp2p-identity = "0.2.8"
 libp2p-mdns = { version = "0.45.1", features = ["tokio"] }
+reqwest = "0.12.4"
 
 [patch.crates-io]
 revm = { git = "https://github.com/bluealloy/revm", rev = "a28a543" }
