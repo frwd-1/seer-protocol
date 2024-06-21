@@ -7,17 +7,8 @@ use futures::Future;
 use reth::api::FullNodeComponents;
 use reth_exex::{ExExContext, ExExNotification};
 use reth_node_ethereum::EthereumNode;
-use reth_primitives::{address, Address, TransactionSigned};
+use reth_primitives::TransactionSigned;
 use reth_provider::Chain;
-
-const OP_BRIDGES: [Address; 6] = [
-    address!("3154Cf16ccdb4C6d922629664174b904d80F2C35"),
-    address!("3a05E5d33d7Ab3864D53aaEc93c8301C1Fa49115"),
-    address!("697402166Fbf2F22E970df8a6486Ef171dbfc524"),
-    address!("99C9fc46f92E8a1c0deC1b1747d010903E884bE1"),
-    address!("735aDBbE72226BD52e818E7181953f42E3b0FF21"),
-    address!("3B95bC951EE0f553ba487327278cAc44f29715E5"),
-];
 
 async fn exex_init<Node: FullNodeComponents>(
     ctx: ExExContext<Node>,
@@ -37,7 +28,7 @@ async fn exex<Node: FullNodeComponents>(mut ctx: ExExContext<Node>) -> eyre::Res
                 let transactions = decode_chain_into_transactions(&**new);
                 for tx in transactions {
                     for heuristic in &heuristics {
-                        heuristic.apply_transaction(tx);
+                        heuristic.apply_transaction(tx).await;
                     }
                 }
             }

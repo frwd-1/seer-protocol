@@ -1,7 +1,8 @@
 pub mod sybil;
+use async_trait::async_trait;
 use reth_primitives::TransactionSigned;
 
-pub trait Heuristic {
-    // fn apply(&self, notification: &ExExNotification, db: &mut LabelDatabase);
-    fn apply_transaction(&self, tx: &TransactionSigned);
+#[async_trait]
+pub trait Heuristic: Send + Sync {
+    async fn apply_transaction(&self, tx: &TransactionSigned);
 }

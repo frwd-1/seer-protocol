@@ -1,9 +1,9 @@
 use crate::heuristics::Heuristic;
 
+use async_trait::async_trait;
 use reqwest::Client;
 use reth_primitives::TransactionSigned;
 use serde::Serialize;
-
 #[derive(Serialize)]
 struct TransactionEvent {
     network: Network,
@@ -23,17 +23,18 @@ pub struct Sybil {
     pub url: String,
 }
 
-impl Sybil {
-    pub fn new(url: String) -> Self {
-        Sybil {
-            client: Client::new(),
-            url,
-        }
-    }
-}
+// impl Sybil {
+//     pub fn new(url: String) -> Self {
+//         Sybil {
+//             client: Client::new(),
+//             url,
+//         }
+//     }
+// }
 
+#[async_trait]
 impl Heuristic for Sybil {
-    fn apply_transaction(&self, tx_signed: &TransactionSigned) {
+    async fn apply_transaction(&self, tx_signed: &TransactionSigned) {
         // Extract the transaction from TransactionSigned
         let tx = &tx_signed.transaction;
 
