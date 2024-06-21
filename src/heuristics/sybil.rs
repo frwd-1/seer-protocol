@@ -1,15 +1,12 @@
-use crate::db::LabelDatabase;
 use crate::heuristics::Heuristic;
 
 use reqwest::Client;
-use reth::primitives::TransactionSigned;
-use reth_exex::ExExNotification;
+use reth_primitives::TransactionSigned;
 use serde::Serialize;
 
 #[derive(Serialize)]
 struct TransactionEvent {
     network: Network,
-    block_number: u64,
     from: String,
     to: String,
     // To add other fields
@@ -21,33 +18,24 @@ struct Network {
     // To add other fields
 }
 
-pub struct AirdropFarming {
-    client: Client,
-    url: String,
+pub struct Sybil {
+    pub client: Client,
+    pub url: String,
 }
 
-impl AirdropFarming {
+impl Sybil {
     pub fn new(url: String) -> Self {
-        AirdropFarming {
+        Sybil {
             client: Client::new(),
             url,
         }
     }
 }
 
-impl Heuristic for AirdropFarming {
-    fn apply_transaction(
-        &self,
-        tx_signed: &TransactionSigned,
-        db: &mut LabelDatabase,
-        notification: &ExExNotification,
-    ) {
+impl Heuristic for Sybil {
+    fn apply_transaction(&self, tx_signed: &TransactionSigned) {
         // Extract the transaction from TransactionSigned
         let tx = &tx_signed.transaction;
-
-        // get this from the context?
-        // For now, using a placeholder since block_number is not directly part of the transaction
-        let block_number = 0; // TODO: Update this
 
         // Extract the `from` address by recovering the signer
         let from = tx_signed.recover_signer().unwrap_or_default();
@@ -59,7 +47,6 @@ impl Heuristic for AirdropFarming {
             network: Network {
                 name: "your_network".to_string(),
             },
-            block_number: block_number,
             from: format!("{:?}", from),
             to: format!("{:?}", to),
             // Populate other fields
@@ -76,6 +63,6 @@ impl Heuristic for AirdropFarming {
             }
         });
 
-        db.insert("airdrop_farming_key", "airdrop_farming_value");
+        // db.insert("airdrop_farming_key", "airdrop_farming_value");
     }
 }
