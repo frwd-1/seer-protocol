@@ -28,6 +28,7 @@ async fn exex<Node: FullNodeComponents>(mut ctx: ExExContext<Node>) -> eyre::Res
                 let transactions = decode_chain_into_transactions(&**new);
                 for tx in transactions {
                     for heuristic in &heuristics {
+                        println!("Applying heuristic to transaction");
                         heuristic.apply_transaction(tx).await;
                     }
                 }
@@ -44,6 +45,7 @@ async fn exex<Node: FullNodeComponents>(mut ctx: ExExContext<Node>) -> eyre::Res
 }
 
 fn decode_chain_into_transactions(chain: &Chain) -> impl Iterator<Item = &TransactionSigned> {
+    println!("Decoding chain into transactions");
     chain
         .blocks_iter()
         .flat_map(|block_with_senders| block_with_senders.body.iter())
@@ -60,5 +62,3 @@ fn main() -> eyre::Result<()> {
         handle.wait_for_node_exit().await
     })
 }
-
-// I'll show you how great I am - Muhammad Ali
