@@ -29,3 +29,6 @@ if (x == true) {
     printf("x is false");
 }
 ```
+
+"Something that looks like a protocol but does not
+accomplish a task is not a protocol—it’s a waste of time" - Bruce Schneier, Applied Cryptography
