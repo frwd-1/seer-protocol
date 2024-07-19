@@ -22,6 +22,8 @@ In such a system, the fact that someone is posting or
 mailing pseudonymously is not a problem, since nuisance
 posters won't be able to get through." Hal Finney, 1993
 
+Without user interfaces smart contracts are largely invisible
+
 Without user interfaces, the broad scope of onchain actions enabled by smart contracts are largely invisible to ordinary users, making them vulnerable to "hidden actions"
 
 ```
