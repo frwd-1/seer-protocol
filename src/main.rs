@@ -1,8 +1,8 @@
+mod capabilities;
 mod db;
-mod heuristics;
 
-use crate::heuristics::sybil::Sybil;
-use crate::heuristics::Heuristic;
+use crate::capabilities::sybil::Sybil;
+use crate::capabilities::Capabilities;
 use futures::Future;
 use reth::api::FullNodeComponents;
 use reth_exex::{ExExContext, ExExNotification};
@@ -17,7 +17,7 @@ async fn exex_init<Node: FullNodeComponents>(
 }
 
 async fn exex<Node: FullNodeComponents>(mut ctx: ExExContext<Node>) -> eyre::Result<()> {
-    let heuristics: Vec<Box<dyn Heuristic>> = vec![Box::new(Sybil {
+    let heuristics: Vec<Box<dyn Capabilities>> = vec![Box::new(Sybil {
         client: reqwest::Client::new(),
         url: "http://localhost:8080".to_string(),
     })];
