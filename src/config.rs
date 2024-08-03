@@ -1,4 +1,3 @@
-// src/config.rs
 pub struct Config {
     pub use_local_node: bool,
     pub alchemy_url: Option<String>,

@@ -1,5 +1,9 @@
+mod alchemy_node;
+mod block_provider;
 mod capabilities;
+mod config;
 mod db;
+mod local_node;
 
 use crate::capabilities::sybil::Sybil;
 use crate::capabilities::Capabilities;
