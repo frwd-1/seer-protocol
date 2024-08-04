@@ -1,17 +1,22 @@
-// src/alchemy_client.rs
-use crate::block_provider::BlockProvider;
+// src/alchemy_node.rs
+use crate::node_provider::NodeProvider;
 use async_trait::async_trait;
 use reqwest::Client;
+use reth_exex::ExExNotification;
 use reth_primitives::TransactionSigned;
 use serde_json::Value;
+use std::sync::Arc;
+use tokio::sync::mpsc::Receiver;
+use tokio::sync::Mutex;
 
-pub struct AlchemyClient {
-    pub client: Client,
-    pub url: String,
+pub struct AlchemyNode {
+    client: Client,
+    url: String,
+    notifications: Arc<Mutex<Receiver<ExExNotification>>>,
 }
 
 #[async_trait]
-impl BlockProvider for AlchemyClient {
+impl NodeProvider for AlchemyNode {
     async fn get_block_transactions(
         &self,
         block_number: u64,
@@ -37,5 +42,9 @@ impl BlockProvider for AlchemyClient {
             .collect::<Vec<TransactionSigned>>();
 
         Ok(transactions)
+    }
+
+    fn notifications(&self) -> &Arc<Mutex<Receiver<ExExNotification>>> {
+        &self.notifications
     }
 }
