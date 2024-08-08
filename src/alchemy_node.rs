@@ -1,50 +1,23 @@
-// src/alchemy_node.rs
-use crate::node_provider::NodeProvider;
-use async_trait::async_trait;
+use eyre::Result;
 use reqwest::Client;
-use reth_exex::ExExNotification;
-use reth_primitives::TransactionSigned;
-use serde_json::Value;
-use std::sync::Arc;
-use tokio::sync::mpsc::Receiver;
-use tokio::sync::Mutex;
 
-pub struct AlchemyNode {
-    client: Client,
-    url: String,
-    notifications: Arc<Mutex<Receiver<ExExNotification>>>,
-}
+pub struct AlchemyNode;
 
-#[async_trait]
-impl NodeProvider for AlchemyNode {
-    async fn get_block_transactions(
-        &self,
-        block_number: u64,
-    ) -> eyre::Result<Vec<TransactionSigned>> {
-        let url = format!("{}/v2/your-api-key", self.url);
-        let params = vec![Value::from(format!("0x{:x}", block_number))];
-        let payload = serde_json::json!({
-            "jsonrpc": "2.0",
-            "method": "eth_getBlockByNumber",
-            "params": params,
-            "id": 1,
-        });
+impl AlchemyNode {
+    pub async fn run() -> Result<()> {
+        let client = Client::new();
+        let url = "https://eth-mainnet.alchemyapi.io/v2/your-api-key";
 
-        let response = self.client.post(&url).json(&payload).send().await?;
-        let block: Value = response.json().await?;
+        // Fetch and process transactions from Alchemy
+        // Example request to get the latest block number
+        let response = client.get(url).send().await?;
+        let data = response.json::<serde_json::Value>().await?;
 
-        // Process the JSON response to extract transactions
-        let transactions = block["result"]["transactions"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .map(|tx| serde_json::from_value(tx.clone()).unwrap())
-            .collect::<Vec<TransactionSigned>>();
+        println!("Fetched data from Alchemy: {:?}", data);
 
-        Ok(transactions)
-    }
+        // Process the data similar to how you would with the Reth node
+        // Apply heuristics, etc.
 
-    fn notifications(&self) -> &Arc<Mutex<Receiver<ExExNotification>>> {
-        &self.notifications
+        Ok(())
     }
 }
