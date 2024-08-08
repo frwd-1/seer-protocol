@@ -1,4 +1,4 @@
-use crate::capabilities::Capabilities;
+use crate::heuristics::Heuristic;
 
 use async_trait::async_trait;
 use reqwest::Client;
@@ -33,7 +33,7 @@ pub struct Sybil {
 // }
 
 #[async_trait]
-impl Capabilities for Sybil {
+impl Heuristic for Sybil {
     async fn apply_transaction(&self, tx_signed: &TransactionSigned) {
         // Extract the transaction from TransactionSigned
         let tx = &tx_signed.transaction;

@@ -1,11 +1,9 @@
-mod alchemy_node;
 mod capabilities;
 mod db;
+mod heuristics;
 
 use crate::capabilities::sybil::Sybil;
 use crate::capabilities::Capabilities;
-use alchemy_node::AlchemyNode;
-use eyre::Result;
 use futures::Future;
 use reth::api::FullNodeComponents;
 use reth_exex::{ExExContext, ExExNotification};
@@ -20,7 +18,7 @@ async fn exex_init<Node: FullNodeComponents>(
     Ok(exex(ctx))
 }
 
-async fn exex<Node: FullNodeComponents>(mut ctx: ExExContext<Node>) -> Result<(), eyre::Report> {
+async fn exex<Node: FullNodeComponents>(mut ctx: ExExContext<Node>) -> eyre::Result<()> {
     let heuristics: Vec<Box<dyn Capabilities>> = vec![Box::new(Sybil {
         client: reqwest::Client::new(),
         url: "http://localhost:8080".to_string(),
