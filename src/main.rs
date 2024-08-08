@@ -1,7 +1,8 @@
 mod capabilities;
+mod config;
 mod db;
-mod heuristics;
 
+use crate::node_provider::NodeProvider;
 use crate::capabilities::sybil::Sybil;
 use crate::capabilities::Capabilities;
 use futures::Future;
@@ -9,25 +10,27 @@ use reth::api::FullNodeComponents;
 use reth_exex::{ExExContext, ExExNotification};
 use reth_node_ethereum::EthereumNode;
 use reth_primitives::TransactionSigned;
-use reth_provider::Chain;
-use std::env;
+use std::sync::Arc;
+use tokio::sync::Mutex;
 
 async fn exex_init<Node: FullNodeComponents>(
     ctx: ExExContext<Node>,
-) -> Result<impl Future<Output = Result<(), eyre::Report>>> {
-    Ok(exex(ctx))
+    node_provider: Arc<dyn NodeProvider>,
+) -> eyre::Result<impl Future<Output = eyre::Result<()>>> {
+    Ok(exex(ctx, node_provider))
 }
 
-async fn exex<Node: FullNodeComponents>(mut ctx: ExExContext<Node>) -> eyre::Result<()> {
+async fn exex<Node: FullNodeComponents>(mut ctx: ExExContext<Node>) -> Result<(), eyre::Report> {
     let heuristics: Vec<Box<dyn Capabilities>> = vec![Box::new(Sybil {
         client: reqwest::Client::new(),
         url: "http://localhost:8080".to_string(),
     })];
 
-    while let Some(notification) = ctx.notifications.recv().await {
+    while let Some(notification) = node_provider.notifications().lock().await.recv().await {
         match &notification {
             ExExNotification::ChainCommitted { new } => {
-                let transactions = decode_chain_into_transactions(&**new);
+                let block_number = new.number();
+                let transactions = node_provider.get_block_transactions(block_number).await?;
                 for tx in transactions {
                     for heuristic in &heuristics {
                         println!("Applying heuristic to transaction");
@@ -46,33 +49,36 @@ async fn exex<Node: FullNodeComponents>(mut ctx: ExExContext<Node>) -> eyre::Res
     Ok(())
 }
 
-fn decode_chain_into_transactions(chain: &Chain) -> impl Iterator<Item = &TransactionSigned> {
-    println!("Decoding chain into transactions");
-    chain
-        .blocks_iter()
-        .flat_map(|block_with_senders| block_with_senders.body.iter())
-}
+fn main() -> eyre::Result<()> {
+    let use_local_node = true; // Or false, based on your requirement
+    let alchemy_url = Some("https://eth-mainnet.alchemyapi.io/v2/your-api-key".to_string());
+    let local_node_url = Some("http://localhost:8545".to_string());
 
-#[tokio::main]
-async fn main() -> Result<(), eyre::Report> {
-    let node_type = env::var("NODE_TYPE").unwrap_or_else(|_| "reth".to_string());
+    let config = Config::new(use_local_node, alchemy_url, local_node_url);
 
-    if node_type == "alchemy" {
-        println!("Using Alchemy node");
-        AlchemyNode::run().await?;
-    } else {
-        println!("Using Reth node");
-        reth::cli::Cli::parse_args().run(|builder, _| async move {
-            let handle = builder
-                .node(EthereumNode::default())
-                .install_exex("Seer", |ctx| async move { exex_init(ctx).await })
-                .launch()
-                .await?;
+    reth::cli::Cli::parse_args().run(|builder, _| async move {
+        let node_provider: Arc<dyn NodeProvider> = if config.use_local_node {
+            // Initialize local node
+            let chain = // Initialize your local chain here
+            Arc::new(LocalNode {
+                chain: Arc::new(chain),
+                notifications: Arc::new(Mutex::new(/* initialize receiver here */)),
+            })
+        } else {
+            // Initialize Alchemy node
+            Arc::new(AlchemyNode {
+                client: reqwest::Client::new(),
+                url: config.alchemy_url.expect("Alchemy URL must be set if use_local_node is false"),
+                notifications: Arc::new(Mutex::new(/* initialize receiver here */)),
+            })
+        };
 
-            handle.wait_for_node_exit().await?;
-            Ok((exex(ctx).await, handle))
-        });
-    }
+        let handle = builder
+            .node(EthereumNode::default())
+            .install_exex("Seer", |ctx| async move { exex_init(ctx, node_provider).await })
+            .launch()
+            .await?;
 
-    Ok(())
+        handle.wait_for_node_exit().await
+    })
 }
