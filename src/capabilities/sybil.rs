@@ -44,15 +44,17 @@ impl Capabilities for Sybil {
         // Extract the `to` address
         let to = tx.to().unwrap_or_default();
 
+        // Create the transaction event (even if we're not sending it, this could be useful)
         let transaction_event = TransactionEvent {
             network: Network {
                 name: "your_network".to_string(),
             },
             from: format!("{:?}", from),
             to: format!("{:?}", to),
-            // Populate other fields
+            // Populate other fields if needed
         };
 
+        // Send the event to the external service
         let response = self
             .client
             .post(&self.url)
@@ -60,9 +62,18 @@ impl Capabilities for Sybil {
             .send()
             .await;
 
+        // Handle the response
         match response {
-            Ok(res) => println!("Response: {:?}", res),
-            Err(err) => eprintln!("Error: {:?}", err),
+            Ok(_) => {
+                // Print the `from` and `to` addresses on successful HTTP response
+                println!("Transaction successfully sent!");
+                println!("From: {:?}", from);
+                println!("To: {:?}", to);
+            }
+            Err(err) => {
+                // Print the error if the request fails
+                eprintln!("Error sending transaction event: {:?}", err);
+            }
         }
     }
 }
