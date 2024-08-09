@@ -53,17 +53,16 @@ impl Capabilities for Sybil {
             // Populate other fields
         };
 
-        let url = self.url.clone();
-        let client = self.client.clone();
-        tokio::spawn(async move {
-            let response = client.post(&url).json(&transaction_event).send().await;
+        let response = self
+            .client
+            .post(&self.url)
+            .json(&transaction_event)
+            .send()
+            .await;
 
-            match response {
-                Ok(res) => println!("Response: {:?}", res),
-                Err(err) => eprintln!("Error: {:?}", err),
-            }
-        });
-
-        // db.insert("airdrop_farming_key", "airdrop_farming_value");
+        match response {
+            Ok(res) => println!("Response: {:?}", res),
+            Err(err) => eprintln!("Error: {:?}", err),
+        }
     }
 }
