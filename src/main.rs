@@ -58,8 +58,7 @@ fn decode_chain_into_transactions(chain: &Chain) -> impl Iterator<Item = &Transa
         .flat_map(|block_with_senders| block_with_senders.body.iter())
 }
 
-#[tokio::main]
-async fn main() -> Result<()> {
+fn main() -> Result<()> {
     println!("Using Reth node");
     reth::cli::Cli::parse_args().run(|builder, _| async move {
         let handle = builder
