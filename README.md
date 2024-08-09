@@ -1,6 +1,6 @@
 # Seer Protocol
 
-The Seer Protocol is a project to enable a distributed and open source reputation system onchain that preserves privacy and enables a more secure ecosystem.
+The Seer Protocol is a p2p protocol that enables a distributed and open source reputation system onchain, preserves privacy and enables a more secure ecosystem.
 
 # Background
 
