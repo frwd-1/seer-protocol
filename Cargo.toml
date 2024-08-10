@@ -5,8 +5,7 @@ edition = "2021"
 
 [dependencies]
 
-eyre = "0.6"
-futures = "0.3"
+# reth
 reth = { git = "https://github.com/paradigmxyz/reth" }
 reth-node-api = { git = "https://github.com/paradigmxyz/reth" }
 reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth" }
@@ -14,14 +13,28 @@ reth-tracing = { git = "https://github.com/paradigmxyz/reth" }
 reth-exex = { git = "https://github.com/paradigmxyz/reth" }
 reth-primitives = { git = "https://github.com/paradigmxyz/reth" }
 reth-provider = { git = "https://github.com/paradigmxyz/reth" }
+reth-chainspec = { git = "https://github.com/paradigmxyz/reth" }
+reth-discv5 = { git = "https://github.com/paradigmxyz/reth" }
+reth-network-peers = { git = "https://github.com/paradigmxyz/reth" }
+
+# networking
+discv5 = "0.6"
+enr = "0.12"
+
+# async
 tokio = { version = "1", features = ["full"] }
+async-trait = "0.1.80"
+futures = "0.3"
+
+# utils
 serde = { version = "1.0", features = ["derive"] }
 serde_derive = "1.0"
 serde_json = "1.0"
-alloy = "0.1.0"
+alloy = "0.2.1"
 trie-rs = "0.4.2"
 dotenv = "0.15.0"
 log = "0.4.21"
 thiserror = "1.0.61"
 reqwest = "0.12.4"
-async-trait = "0.1.80"
+clap = "4"
+eyre = "0.6"

@@ -1,6 +1,7 @@
 mod capabilities;
 mod db;
 mod exex;
+mod network;
 mod utils;
 
 use exex::init::exex_init;
