@@ -18,7 +18,6 @@ struct TransactionEvent {
 #[derive(Serialize)]
 struct Network {
     name: String,
-    // others?
 }
 
 pub struct MoneyLaundering {
