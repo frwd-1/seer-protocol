@@ -1,8 +1,10 @@
-// capabilities/money_laundering.rs
+// capabilities/tokenID.rs
 use crate::capabilities::Capabilities;
 use async_trait::async_trait;
 use reqwest::Client;
+use reth::revm::interpreter::instructions::data;
 use reth_primitives::TransactionSigned;
+use reth_tracing::tracing_subscriber::registry::Data;
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -10,13 +12,13 @@ struct TransactionEvent {
     network: Network,
     from: String,
     to: String,
-    // To add other fields
+    data: String,
 }
 
 #[derive(Serialize)]
 struct Network {
     name: String,
-    // To add other fields
+    // others?
 }
 
 pub struct MoneyLaundering {
@@ -27,11 +29,11 @@ pub struct MoneyLaundering {
 #[async_trait]
 impl Capabilities for MoneyLaundering {
     async fn apply_transaction(&self, tx_signed: &TransactionSigned) {
-        // Placeholder logic for detecting money laundering
         let tx = &tx_signed.transaction;
 
         let from = tx_signed.recover_signer().unwrap_or_default();
         let to = tx.to().unwrap_or_default();
+        let data: Vec<u8> = tx.input().to_vec();
 
         let transaction_event = TransactionEvent {
             network: Network {
@@ -39,6 +41,7 @@ impl Capabilities for MoneyLaundering {
             },
             from: format!("{:?}", from),
             to: format!("{:?}", to),
+            data: format!("{:?}", data),
         };
 
         let response = self
