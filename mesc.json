@@ -1,0 +1,16 @@
+{
+  "mesc_version": "0.2.0",
+  "default_endpoint": null,
+  "endpoints": {
+    "alchemy_1": {
+      "name": "alchemy_1",
+      "url": "https://eth-mainnet.g.alchemy.com/v2/eWe03XQQeTi0oZ5iF9tatdDRexkcsioq",
+      "chain_id": "1",
+      "endpoint_metadata": {}
+    }
+  },
+  "network_defaults": {},
+  "network_names": {},
+  "profiles": {},
+  "global_metadata": {}
+}

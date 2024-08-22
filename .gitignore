@@ -2,3 +2,5 @@
 .env
 /data
 jwt.hex
+src
+xxfunc
