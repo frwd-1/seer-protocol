@@ -18,10 +18,8 @@ reth-discv5 = { git = "https://github.com/paradigmxyz/reth" }
 reth-network-peers = { git = "https://github.com/paradigmxyz/reth" }
 
 # xxfunc
-xxfunc-runtime = { git = "https://github.com/rkdud007/xxfunc" }
-xxfunc-db = { git = "https://github.com/rkdud007/xxfunc" }
-xxfunc-exex = { git = "https://github.com/rkdud007/xxfunc" }
-cargo-xxfunc = { git = "https://github.com/rkdud007/xxfunc" }
+xxfunc = { git = "https://github.com/rkdud007/xxfunc" }
+
 
 # networking
 discv5 = "0.6"
