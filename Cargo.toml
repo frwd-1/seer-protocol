@@ -1,9 +1,14 @@
-[package]
-name = "seer_protocol"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+resolver = "2"
+members = ["src/capabilities/sybil"]
 
-[dependencies]
+[workspace.package]
+version = "0.1.0"
+publish = false
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[workspace.dependencies]
 
 # reth
 reth = { git = "https://github.com/paradigmxyz/reth" }
