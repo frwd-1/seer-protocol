@@ -1,9 +1,11 @@
 [workspace]
 resolver = "2"
+members = ["node/exex"]
 
-exclude = ["src/capabilities/sybil"]
+exclude = ["capabilities/sybil"]
 
 [workspace.package]
+name = "seer_protocol"
 version = "0.1.0"
 publish = false
 edition = "2021"
@@ -12,11 +14,16 @@ license = "MIT OR Apache-2.0"
 [workspace.dependencies]
 
 # reth
+
 reth = { git = "https://github.com/paradigmxyz/reth" }
 reth-node-api = { git = "https://github.com/paradigmxyz/reth" }
 reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth" }
 reth-tracing = { git = "https://github.com/paradigmxyz/reth" }
-reth-exex = { git = "https://github.com/paradigmxyz/reth" }
+reth-exex-types = { git = "https://github.com/paradigmxyz/reth" }
+reth-execution-types = { git = "https://github.com/paradigmxyz/reth" }
+reth-exex = { git = "https://github.com/paradigmxyz/reth", features = [
+    "serde",
+] }
 reth-primitives = { git = "https://github.com/paradigmxyz/reth" }
 reth-provider = { git = "https://github.com/paradigmxyz/reth" }
 reth-chainspec = { git = "https://github.com/paradigmxyz/reth" }
@@ -24,27 +31,50 @@ reth-discv5 = { git = "https://github.com/paradigmxyz/reth" }
 reth-network-peers = { git = "https://github.com/paradigmxyz/reth" }
 
 # xxfunc
-xxfunc = { git = "https://github.com/rkdud007/xxfunc" }
-
-
+xxfunc-db = { git = "https://github.com/frwd-1/xxfunc" }
+xxfunc-runtime = { git = "https://github.com/frwd-1/xxfunc" }
 # networking
 discv5 = "0.6"
 enr = "0.12"
+reqwest = "0.12.4"
+jsonrpsee = { version = "0.24.3", features = ["server", "macros"] }
+base64 = "0.22.1"
+jsonrpsee-core = { version = "0.24.3" }
 
 # async
 tokio = { version = "1", features = ["full"] }
-async-trait = "0.1.80"
+tokio-stream = "0.1"
+async-trait = "0.1"
 futures = "0.3"
 
-# utils
+# wasm
+wasi-common = "22"
+wasmtime = "22"
+
+# tracing
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+
+# serialization
 serde = { version = "1.0", features = ["derive"] }
 serde_derive = "1.0"
 serde_json = "1.0"
 alloy = "0.2.1"
+toml = "0.7"
+
+# server
+axum = { version = "0.7.5", features = ["multipart"] }
+
+# db
+r2d2 = "0.8.10"
+tempfile = "3.12.0"
+r2d2_sqlite = "0.25.0"
+rusqlite = "0.32.1"
 trie-rs = "0.4.2"
+
+# env / cli / logging
 dotenv = "0.15.0"
 log = "0.4.21"
 thiserror = "1.0.61"
-reqwest = "0.12.4"
-clap = "4"
 eyre = "0.6"
+clap = { version = "4.5.16", features = ["derive"] }

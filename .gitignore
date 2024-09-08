@@ -1,6 +1,11 @@
-/target
+capabilities
+db
+network
+node
+token
+utils
+xx
+target
 .env
-/data
 jwt.hex
-src
-xxfunc
+
