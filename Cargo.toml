@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["node/exex", "node/wasm/server", "cli"]
+members = ["node/exex", "node/wasm/server", "cargo-seer"]
 
 exclude = ["capabilities/sybil"]
 
