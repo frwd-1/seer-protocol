@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["node/exex"]
+members = ["node/exex", "node/wasm/server", "cli"]
 
 exclude = ["capabilities/sybil"]
 
@@ -33,10 +33,11 @@ reth-network-peers = { git = "https://github.com/paradigmxyz/reth" }
 # xxfunc
 xxfunc-db = { git = "https://github.com/frwd-1/xxfunc" }
 xxfunc-runtime = { git = "https://github.com/frwd-1/xxfunc" }
+
 # networking
 discv5 = "0.6"
 enr = "0.12"
-reqwest = "0.12.4"
+reqwest = { version = "0.12.4", features = ["blocking", "multipart", "json"] }
 jsonrpsee = { version = "0.24.3", features = ["server", "macros"] }
 base64 = "0.22.1"
 jsonrpsee-core = { version = "0.24.3" }
