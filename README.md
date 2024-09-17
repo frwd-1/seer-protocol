@@ -38,3 +38,14 @@ accomplish a task is not a protocol—it’s a waste of time" - Bruce Schneier, 
 # getting started
 
 add cargo-seer to path
+
+- start a lighthouse client --
+- run command:
+  ETHERSCAN_API_KEY= cargo run -p exex -- \
+   node --full \
+   --chain mainnet \
+   --http \
+   --authrpc.jwtsecret "" \
+   --authrpc.addr 127.0.0.1 \
+   --authrpc.port 8551 \
+   --debug.etherscan
