@@ -41,7 +41,7 @@ add cargo-seer to path
 
 - start a lighthouse client --
 - run command:
-  ETHERSCAN_API_KEY= cargo run -p exex -- \
+  ETHERSCAN_API_KEY="" cargo run -p exex -- \
    node --full \
    --chain mainnet \
    --http \
