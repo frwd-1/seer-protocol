@@ -8577,6 +8577,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
+name = "sybil"
+version = "0.1.0"
+dependencies = [
+ "reth-exex",
+ "serde_json",
+ "xxfunc",
+]
+
+[[package]]
 name = "syn"
 version = "1.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -10452,6 +10461,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "xxfunc"
+version = "0.0.0"
+source = "git+https://github.com/rkdud007/xxfunc#420f5cc5252b50b450eb7ce2c25dd6e772649011"
+dependencies = [
+ "xxfunc-macro",
+]
+
+[[package]]
 name = "xxfunc-db"
 version = "0.0.0"
 source = "git+https://github.com/frwd-1/xxfunc#0b55f8b0eefa734e9983a932b7603b8ea6d390e8"
@@ -10461,6 +10478,17 @@ dependencies = [
  "r2d2_sqlite",
  "rusqlite",
  "tempfile",
+]
+
+[[package]]
+name = "xxfunc-macro"
+version = "0.1.0"
+source = "git+https://github.com/rkdud007/xxfunc#420f5cc5252b50b450eb7ce2c25dd6e772649011"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+ "tokio",
 ]
 
 [[package]]

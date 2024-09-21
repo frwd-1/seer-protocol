@@ -49,3 +49,15 @@ add cargo-seer to path
    --authrpc.addr 127.0.0.1 \
    --authrpc.port 8551 \
    --debug.etherscan
+
+https://doc.rust-lang.org/nightly/rustc/platform-support/wasm32-wasip1.html
+
+To build this target first acquire a copy of wasi-sdk. At this time version 22 is the minimum needed.
+
+Next configure the WASI_SDK_PATH environment variable to point to where this is installed. For example:
+
+export WASI_SDK_PATH=/path/to/wasi-sdk-22.0
+
+rustup target add wasm32-wasip1
+
+disposing with Wasm - dynamically loading ExEx's as plugins

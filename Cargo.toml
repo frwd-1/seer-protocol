@@ -1,11 +1,10 @@
 [workspace]
 resolver = "2"
-members = ["node/exex", "node/wasm/server", "cargo-seer"]
+members = ["node/exex", "node/wasm/server", "cargo-seer", "capabilities/sybil"]
 
 exclude = ["capabilities/sybil"]
 
 [workspace.package]
-name = "seer_protocol"
 version = "0.1.0"
 publish = false
 edition = "2021"
