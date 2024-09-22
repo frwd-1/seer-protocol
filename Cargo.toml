@@ -1,10 +1,11 @@
 [workspace]
 resolver = "2"
-members = ["node/exex", "node/wasm/server", "cargo-seer", "capabilities/sybil"]
+members = ["node/exex", "node/wasm/server", "cargo-seer"]
 
 exclude = ["capabilities/sybil"]
 
 [workspace.package]
+
 version = "0.1.0"
 publish = false
 edition = "2021"
