@@ -62,4 +62,4 @@ rustup target add wasm32-wasip1
 
 dynamically loading ExEx's as plugins
 
-"wherever law ends, tyranny begins" - John Locke
+where code ends, tyranny begins
