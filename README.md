@@ -62,4 +62,13 @@ rustup target add wasm32-wasip1
 
 dynamically loading ExEx's as plugins
 
+Overview of Network Topology - This refers to the arrangement or pattern of how nodes (computers, devices, or participants) are connected and interact with each other in a network.
+Liveness, Fault Tolerance
+
+Incentives - how are incentives structured?
+
+how data leakage is managed
+
+No Model Exposure: The internal structure, parameters, or training details of individual models remain private, reducing the risk of exposing proprietary algorithms or sensitive insights.
+
 where code ends, tyranny begins
