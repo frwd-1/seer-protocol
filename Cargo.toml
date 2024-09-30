@@ -6,6 +6,7 @@ members = [
     "node/database",
     "node/runtime",
     "cargo-seer",
+    "network",
     "capabilities/sybil",
     "capabilities/aml",
 ]
@@ -25,6 +26,7 @@ database = { path = "node/database" }
 exex = { path = "node/exex" }
 server = { path = "node/server" }
 runtime = { path = "node/runtime" }
+network = { path = "network" }
 
 
 # reth
@@ -43,7 +45,7 @@ reth-discv5 = { git = "https://github.com/paradigmxyz/reth" }
 reth-network-peers = { git = "https://github.com/paradigmxyz/reth" }
 
 # networking
-discv5 = "0.6"
+discv5 = "0.7"
 enr = "0.12"
 reqwest = { version = "0.12.4", features = ["blocking", "multipart", "json"] }
 jsonrpsee = { version = "0.24.3", features = ["server", "macros"] }
