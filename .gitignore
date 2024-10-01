@@ -11,3 +11,4 @@ jwt.hex
 cargo-seer
 .vscode
 runtime
+consensus

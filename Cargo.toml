@@ -9,6 +9,7 @@ members = [
     "network",
     "capabilities/sybil",
     "capabilities/aml",
+    "capabilities/v3pools",
 ]
 
 
