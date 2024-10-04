@@ -10,6 +10,7 @@ members = [
     "capabilities/sybil",
     "capabilities/aml",
     "capabilities/v3pools",
+    "node/shared",
 ]
 
 
@@ -28,6 +29,7 @@ exex = { path = "node/exex" }
 server = { path = "node/server" }
 runtime = { path = "node/runtime" }
 network = { path = "network" }
+shared = { path = "node/shared" }
 
 
 # reth
@@ -44,6 +46,13 @@ reth-provider = { git = "https://github.com/paradigmxyz/reth" }
 reth-chainspec = { git = "https://github.com/paradigmxyz/reth" }
 reth-discv5 = { git = "https://github.com/paradigmxyz/reth" }
 reth-network-peers = { git = "https://github.com/paradigmxyz/reth" }
+reth-node-builder = { git = "https://github.com/paradigmxyz/reth" }
+reth-consensus = { git = "https://github.com/paradigmxyz/reth" }
+reth-db = { git = "https://github.com/paradigmxyz/reth" }
+reth-transaction-pool = { git = "https://github.com/paradigmxyz/reth" }
+reth-ethereum-engine-primitives = { git = "https://github.com/paradigmxyz/reth" }
+reth-evm-ethereum = { git = "https://github.com/paradigmxyz/reth" }
+
 
 # networking
 discv5 = "0.7"
@@ -90,3 +99,5 @@ log = "0.4.21"
 thiserror = "1.0.61"
 eyre = "0.6"
 clap = { version = "4.5.16", features = ["derive"] }
+
+# other

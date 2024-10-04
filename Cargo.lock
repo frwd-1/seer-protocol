@@ -3177,6 +3177,7 @@ dependencies = [
  "jsonrpsee-core",
  "log",
  "network",
+ "once_cell",
  "reth",
  "reth-execution-types",
  "reth-exex",
@@ -3186,6 +3187,7 @@ dependencies = [
  "reth-tracing",
  "runtime",
  "serde_json",
+ "shared",
  "tokio",
  "tokio-stream",
  "tracing",
@@ -9216,6 +9218,7 @@ dependencies = [
  "parking_lot 0.12.3",
  "reth-execution-types",
  "reth-exex-types",
+ "reth-node-api",
  "rusqlite",
  "serde_json",
  "tokio",
@@ -9832,6 +9835,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f40ca3c46823713e0d4209592e8d6e826aa57e928f09752619fc696c499637f6"
 dependencies = [
  "lazy_static",
+]
+
+[[package]]
+name = "shared"
+version = "0.1.0"
+dependencies = [
+ "once_cell",
+ "reth",
+ "reth-consensus",
+ "reth-db",
+ "reth-ethereum-engine-primitives",
+ "reth-evm-ethereum",
+ "reth-node-api",
+ "reth-node-builder",
+ "reth-node-ethereum",
+ "reth-provider",
+ "reth-transaction-pool",
 ]
 
 [[package]]
@@ -11187,13 +11207,19 @@ dependencies = [
  "bigdecimal",
  "dashmap 6.1.0",
  "ethers",
+ "exex",
  "lazy_static",
  "log",
  "num-bigint",
  "rayon",
  "reth-exex",
+ "reth-node-api",
+ "reth-node-builder",
+ "reth-node-ethereum",
  "reth-primitives",
  "reth-provider",
+ "reth-transaction-pool",
+ "shared",
 ]
 
 [[package]]
