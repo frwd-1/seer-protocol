@@ -69,6 +69,8 @@ Incentives, how are incentives structured?
 
 how data leakage is managed
 
+process inputs
+
 No Model Exposure: The internal structure, parameters, or training details of individual models remain private, reducing the risk of exposing proprietary algorithms or sensitive insights.
 
 where code ends, tyranny begins
