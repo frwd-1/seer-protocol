@@ -37,6 +37,10 @@ accomplish a task is not a protocol—it’s a waste of time" - Bruce Schneier, 
 
 ""
 
+because we act, we must decide,
+and how decisively we can act depends on how
+well we know the consequences - t. sowell
+
 # getting started
 
 add cargo-seer to path

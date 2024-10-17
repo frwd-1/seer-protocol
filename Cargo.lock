@@ -11477,6 +11477,7 @@ dependencies = [
  "reth-provider",
  "reth-transaction-pool",
  "rust_decimal",
+ "serde_json",
  "shared",
  "tokio",
 ]
