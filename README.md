@@ -84,3 +84,5 @@ Kolmogorov Complexity and Information Content: Algorithmic information theory de
 where code ends, tyranny begins
 
 # Justifications
+
+Extropy

@@ -12,5 +12,7 @@ cargo-seer
 .vscode
 runtime
 consensus
+primitives
+incentives
 
 

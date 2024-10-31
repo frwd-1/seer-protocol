@@ -1,5 +1,5 @@
-use crate::terms::Terms;
+// use crate::terms::Terms;
 
-pub struct Contract<T: Terms> {
-    pub terms: Vec<T>,
-}
+// pub struct Contract<T: Terms> {
+//     pub terms: Vec<T>,
+// }
