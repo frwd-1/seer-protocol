@@ -11,6 +11,7 @@ members = [
     "capabilities/aml",
     "capabilities/v3pools",
     "node/shared",
+    "primitives",
 ]
 
 

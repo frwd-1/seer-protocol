@@ -6243,6 +6243,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "primitives"
+version = "0.1.0"
+dependencies = [
+ "base64 0.22.1",
+ "clap",
+ "eyre",
+ "reqwest 0.12.7",
+ "serde",
+ "serde_json",
+ "tokio",
+ "toml 0.7.8",
+]
+
+[[package]]
 name = "proc-macro-crate"
 version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
