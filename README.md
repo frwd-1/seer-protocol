@@ -79,8 +79,6 @@ No Model Exposure: The internal structure, parameters, or training details of in
 
 Uniswap token sorting
 
-Add primitives
-
 Kolmogorov Complexity and Information Content: Algorithmic information theory defines the complexity of an object (e.g., a sequence of transactions) as the length of the shortest algorithm or program that can describe or reproduce that object
 
 where code ends, tyranny begins
