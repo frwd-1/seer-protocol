@@ -5,6 +5,5 @@
 - contracts are the building blocks of a market economy.
 
 
-
 where code ends, tyranny begins
 
