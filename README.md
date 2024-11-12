@@ -68,9 +68,6 @@ rustup target add wasm32-wasip1
 
 dynamically loading ExEx's as plugins
 
-Overview of Network Topology - This refers to the arrangement or pattern of how nodes (computers, devices, or participants) are connected and interact with each other in a network.
-Liveness, Fault Tolerance
-
 Incentives
 
 how data leakage is managed
