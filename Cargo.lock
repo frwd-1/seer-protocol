@@ -1880,6 +1880,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1462739cb27611015575c0c11df5df7601141071f07518d56fcc1be504cbec97"
 
 [[package]]
+name = "classes"
+version = "0.1.0"
+dependencies = [
+ "base64 0.22.1",
+ "clap",
+ "eyre",
+ "reqwest 0.12.7",
+ "serde",
+ "serde_json",
+ "tokio",
+ "toml 0.7.8",
+]
+
+[[package]]
 name = "cobs"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"

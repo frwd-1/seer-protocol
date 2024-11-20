@@ -12,6 +12,7 @@ members = [
     "capabilities/v3pools",
     "node/shared",
     "primitives",
+    "classes",
 ]
 
 
