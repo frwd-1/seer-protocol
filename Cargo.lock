@@ -2491,6 +2491,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "db"
+version = "0.1.0"
+dependencies = [
+ "dashmap 6.1.0",
+ "lazy_static",
+ "log",
+ "rayon",
+ "reth-exex",
+ "reth-primitives",
+ "reth-provider",
+]
+
+[[package]]
 name = "debug-helper"
 version = "0.3.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"

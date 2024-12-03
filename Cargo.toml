@@ -13,6 +13,7 @@ members = [
     "node/shared",
     "primitives",
     "classes",
+    "db",
 ]
 
 
